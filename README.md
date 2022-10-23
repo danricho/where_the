@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="static/logo.svg" style='max-width: 20%;'/>
+<img src="static/logo_md.png"/>
 
 # Where The ?!?
 
