@@ -1,5 +1,5 @@
 import json, yaml, random
-import string, os, re, time
+import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
 from datetime import datetime, date
 from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory
@@ -7,6 +7,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, U
 from flask_qrcode import QRcode
 
 base_path = os.path.dirname(os.path.realpath(__file__))
+git_revision = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode()
 
 ############################################################
 #              LOADING CONFIG FROM YAML FILE               #
@@ -360,6 +361,14 @@ def handle_error(e):
   except:
     pass  
   return render_template('error.j2.html', error=error_info)
+
+# DATA PROVIDED TO ALL TEMPLATES
+@app.context_processor
+def inject_data():    
+  return {
+    'git_revision': git_revision    
+  }
+
 
 ############################################################
 #                  START THE FLASK APP!                    #
