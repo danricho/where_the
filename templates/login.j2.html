@@ -1,0 +1,32 @@
+{% extends "base.j2.html" %}
+{% block header_content %}{% endblock %}
+{% block main_content %}
+<div class="container thin text-center">
+  <div class="hero is-full-screen">
+      <div class="login is-center is-vertical-align">        
+        <h2 class="">Welcome</h2>
+        <form action="" method="post">            
+          <fieldset>
+            <legend>Login</legend>
+            <p>
+              <input type="text" class="form-control" placeholder="username" required="required" name="username">
+            </p>
+            <p>
+              <input type="password" class="form-control" placeholder="password" required="required" name="password">
+            </p>
+            <p>
+              <button type="submit" class="button primary">Log in</button>
+            </p>
+          </fieldset>
+        </form>
+      </div>
+  </div>
+</div>
+
+<script>
+  $(document).prop('title', $(document).prop('title') + " - Login");
+</script>
+
+{% endblock %}
+
+{% block footer_content %}{% endblock %}

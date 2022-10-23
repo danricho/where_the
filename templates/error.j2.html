@@ -1,0 +1,24 @@
+{% extends "base.j2.html" %}
+{% block header_content %}{% endblock %}
+{% block main_content %}
+<div class="container thin text-center">
+  <div class="hero is-full-screen">
+      <div class="login is-center is-vertical-align">        
+        <h2 class="">{{error.name}}</h2>      
+        <fieldset>
+          <legend>ERROR: {{error.code}}</legend>
+          <p>{{error.description}}</p>          
+          <p><button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button></p>      
+          
+        </fieldset>
+      </div>
+  </div>
+</div>
+
+<script>
+  $(document).prop('title', $(document).prop('title') + " - Error");
+</script>
+
+{% endblock %}
+
+{% block footer_content %}{% endblock %}

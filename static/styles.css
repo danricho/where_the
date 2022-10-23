@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
+:root {
+  --color-primary: #C0A890 !important;
+  --font-family-sans: Nunito, sans-serif;
+}
+
+.fixed-top {
+  padding: 0.5rem 0;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 2000;
+  background-color: var(--color-primary);
+  color: #FFF;
+}
+
+section {
+  margin: 3em 0;
+}
+
+h1 { margin: 0.25em 0; }
+h2 { margin: 0.2em 0; }
+h3 { margin: 0.1em 0; }
+
+.item, input{ line-height: 1; }
+.item{
+  display: inline-block;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-lightGrey);
+  font-size: 1em;
+  -webkit-transition: all .2s ease;
+  transition: all .2s ease;
+}
+input[type=range] { padding: 0.8rem 0 !important; accent-color: var(--color-primary); background-color: #FFF; margin: 0 !important; padding: 0.4rem 0 !important; }
+input[type=range]:focus { -webkit-box-shadow: none !important; box-shadow: none !important;  margin: 0 !important; padding: 0.4rem 0 !important; }
+
+label {white-space: nowrap;}
+
+@media (not(hover: hover)) and (not(pointer: fine)) {
+  .hide-on-phone { display: none; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .hide-not-on-phone { display: none; }
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+}
+.button+.button {
+  margin-left: 0.5rem;
+}
+
+.button.outline {
+  background-color: transparent;
+}
+.button.outline.error {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.disable-small-100 { 
+  flex: 1 !important; 
+  margin: 0 calc(var(--grid-gutter)/2);
+}
+
+
+/* login pages */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+.is-full-screen {
+    width: 100%;
+    min-height: 100vh;
+}
+.login {
+    flex: 1;
+    flex-direction: column;
+}
+.thin {
+    max-width: 350px;
+}
+.form-group {
+    margin: 0.35em 0 0.7em;
+}
+
+/* printing QR code styles */
+
+.printed {
+  width: 4cm;
+  border: solid 1px #aaa;
+  padding: 0cm 0.2cm
+}
+
+/* print styles */
+@media print {
+
+  .main {padding: 0 !important;}
+
+  * { margin: 0; padding: 0;}
+  /* :not(.printed){display: none;} */
+  .printed {
+    width: 4cm;
+    border: solid 1px #aaa;
+    padding: 0cm 0.2cm
+  }
+  .ident {
+    padding: 0.1cm;
+    font-size: 1.5em;
+    text-align: center;
+    text-transform: capitalize;
+    font-weight: bold;
+    color: #FFF;
+    background-color: var(--color-primary) !important;
+    margin: 0.2cm 0;
+  }      
+
+  .no-print { display:none;}
+}

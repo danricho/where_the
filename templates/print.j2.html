@@ -1,0 +1,33 @@
+{% extends "base.j2.html" %}
+{% block main_content %}
+<div class='main'>
+  <div class="container">
+    <script>
+      function print_qr(){
+        window.print();
+      }
+    </script>
+  
+  <section>
+    <div class="no-print" style="margin: 2rem 0;"> 
+      <button type="button" class="button primary" onclick="print_qr();">Print</button>
+    </div> 
+  </section>
+
+  <section>
+  <div class="printed">
+    <div class="ident">{{loc.id}}</div>
+    <img src="{{ qrcode(SITE.BASE_URL + SITE.PATH_PREFIX + '/scan/' + loc.id, error_correction='H', box_size=12, border=0, icon_img='logo.png') }}">
+  </div>
+
+  </section>
+  <section>
+    <div class="no-print" style="margin: 2rem 0;">
+      <button class="button primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Finished Printing - Back to View</button>
+    </div>
+  </section>
+
+  </div>
+</div>
+  
+{% endblock %}

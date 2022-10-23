@@ -1,0 +1,19 @@
+{
+    "name": "Where The ?!?",
+    "short_name": "Where The ?!?",
+    "icons": [
+        {
+            "src": "/static/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#c0a890",
+    "background_color": "#c0a890",
+    "display": "standalone"
+}

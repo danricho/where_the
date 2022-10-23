@@ -1,0 +1,58 @@
+{% extends "base.j2.html" %}
+{% block header_content %}{% endblock %}
+{% block main_content %}
+<div class='main'>
+  <div class="container">
+  <section>
+    <h2>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h2>
+    <p><small> ID: {{loc.id}}</small></p>  
+  
+  </section>
+  <section>
+    <fieldset style="margin: 1rem 0;">
+      <legend>Location Information</legend>
+      
+      <p style="margin: 1rem 0;">
+        <span class="item"><span class="text">@ {% if loc.location != "" %}{{loc.location}}{% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span></span>
+      </p>
+      <p style="margin: 1rem 0;">
+        <span class="item"><span class="text">{% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span></span>
+      </p>
+      <p style="margin: 1rem 0;">
+        <label for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
+        <input id="fullness-input" name="location-input" type="range" value="{{loc.fullness}}" min="0" step="10" max="100" readonly/>
+      </p>
+    </fieldset>
+
+    <fieldset style="margin: 1rem 0;">
+      <legend>{{loc['items'] | length}} Stored Item{% if loc['items'] | length != 1 %}s{%endif%}</legend>
+      <div id="item-list" style="margin: 1rem 0;">
+      {% if loc['items'] | length %}
+      {% for item in loc['items'] | sort %}
+        <div style="margin: 0.5rem 0;">
+          <span class="item">
+            <span class="text">{{item}}</span>
+          </span>
+        </div>
+      {% endfor %}  
+      {% else %}
+      <p>No items yet. <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> to add some!</p>
+      {% endif %}
+      </div>      
+
+    </fieldset>
+    <p><small>Location Last Updated: <i>{{loc.last_change}}</i></small></p>
+  </section>
+  <section>
+    <div style="margin: 0;">
+      <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
+      <button class="button primary" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR code</button>
+      <button class="button primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
+    </div>
+  </section>
+</div>
+</div>
+  
+{% endblock %}
+
+{% block footer_content %}{% endblock %}

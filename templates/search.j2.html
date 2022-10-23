@@ -1,0 +1,67 @@
+{% extends "base.j2.html" %}
+{% block main_content %}
+<div class='main'>
+<div class="container">
+
+  <section>
+    <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
+  </section>
+
+  <section>
+    <h2>Search for an Item</h2>
+    <form id="search" method="post">
+    <p class="grouped" style="margin: 0;">
+      <input type="text" name="search-input" id="search-input" placeholder="Search for what?" value="{{results.query}}">
+      <button type="submit" class="button primary">Search</button>
+    </p>  
+    </form>
+
+    <p class="grouped" style="margin: 0;"><small>wildcards: ? * | case/punctuation ignored</small></p>
+    <p class="grouped" style="margin: 0;"><small>Examples: <i>Lego*, Lego Mini?igure, SMD*Res*0805</i></small></p>
+  
+  </section>
+
+
+  <section>
+    <div class="row">
+      <div class="col is-vertical-align disable-small-100">
+        <h2>Results</h2>
+      </div>
+      <div class="col is-right is-vertical-align disable-small-100">
+        <span>Most matching items first</span>
+      </div>
+    </div>
+    
+    {% for loc in results.results.values() %}  
+      <fieldset style="margin: 1rem 0;">
+        <legend>{{loc.id}}</legend>
+        <h3>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.location != "" %} | {{loc.location}}{% endif %}</h3>
+        <div id="item-list" style="margin: 0;">
+        <div style="margin: 0.5rem 0;"><strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}:</strong></div>
+        {% for item in loc['items'] | sort %}
+          <div style="margin: 0.5rem 0;">
+            <span class="item">
+              <span class="text">{{item}}</span>
+            </span>
+          </div>
+        {% endfor %} 
+        <p style="margin: 1.5rem 0;">
+          <button class="button primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View Location</button>
+        </p>  
+      </fieldset>  
+
+    {% endfor %}
+    
+  </section>
+
+  <section>  
+    <p><small><i>Regex used: <code>{{results.regex}}</code></i></small></p> 
+    <div style="margin: 1rem 0;">
+      <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
+    </div>
+  </section>
+  
+</div>
+</div>
+
+{% endblock %}

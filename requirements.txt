@@ -1,0 +1,4 @@
+PyYAML
+Flask
+Flask-QRcode
+Flask-Login

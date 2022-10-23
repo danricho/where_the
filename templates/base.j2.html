@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('send_static', path='icons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('send_static', path='icons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('send_static', path='icons/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('send_static', path='icons/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('send_static', path='icons/safari-pinned-tab.svg') }}" color="#c0a890">
+    <link rel="shortcut icon" href="{{ url_for('send_static', path='icons/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#c0a890">
+    <meta name="msapplication-config" content="{{ url_for('send_static', path='icons/browserconfig.xml') }}">
+    <meta name="theme-color" content="#c0a890">
+
+    <!-- EXISTING -->
+    <meta http-equiv='content-type' content='text/html; charset=utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' >
+    <title>Where The ?!?</title>    
+    <link rel="stylesheet" href="{{url_for('send_static', path='chota.0.7.2.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('send_static', path='styles.css')}}">
+
+
+    <script src="{{url_for('send_static', path='jquery.3.5.1.min.js')}}"></script>
+    <script src="{{url_for('send_static', path='html5-qrcode.min.js')}}"></script>
+  </head>  
+  <body class="dark">
+    
+    <div class="fixed-top no-print">
+      <div class="container">
+        <h1><a style="color: #FFF;" href="{{url_for('home')}}">Where The ?!?</a></h1>
+      </div>
+    </div>
+    {% block main_content %}{% endblock %}
+    
+    <!-- TODO: DARK MODE -->  
+
+    <div class="no-print">
+      <div class="container" style="border-top: 1px solid var(--color-primary); padding-top: 1em; padding-bottom: 1em;">
+        
+        <p>
+          <a href="https://danricho.com"><img src="https://img.shields.io/static/v1?label=built by&message=danricho&style=flat&color=C0A890&labelColor=a0a0a0" alt="Built with Python3"></a>
+          <a href="https://en.wikipedia.org/wiki/2022"><img src="https://img.shields.io/static/v1?label=built in&message=2022&style=flat&color=C0A890&labelColor=a0a0a0" alt="Built in 2022"></a>
+          <a href="https://choosealicense.com/licenses/gpl-3.0/"><img src="https://img.shields.io/static/v1?label=released under&message=GNU GPLv3&style=flat&color=C0A890&labelColor=a0a0a0" alt="Released under GNU GPLv3"></a><br /> 
+          <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built using-Python 3-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Python3"></a>
+          <a href="https://flask.palletsprojects.com/"><img src="https://img.shields.io/badge/built using-Flask-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask"></a>
+          <a href="https://flask-login.readthedocs.io/en/latest/"><img src="https://img.shields.io/badge/built using-Flask Login-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask Login"></a>
+          <a href="https://marcoagner.github.io/Flask-QRcode/"><img src="https://img.shields.io/badge/built using-Flask QRCode-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask QRCode"></a>
+          <a href="https://github.com/mebjas/html5-qrcode"><img src="https://img.shields.io/badge/built using-HTML5 QRCode-C0A890?labelColor=a0a0a0&style=flat" alt="Built using HTML5 QRCode"></a>
+          <a href="https://jquery.com/"><img src="https://img.shields.io/badge/built using-JQuery 3.5.1-C0A890?labelColor=a0a0a0&style=flat" alt="Built using JQuery 3.5.1"></a>
+          <a href="https://jenil.github.io/chota/"><img src="https://img.shields.io/badge/built using-Chota CSS-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Chota CSS"></a>
+        </p>
+        
+      </div>
+    </div>
+    <script>
+      $('.main').css('padding-top', $('.fixed-top').height())
+    </script>
+
+
+  </body>
+</html>
