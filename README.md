@@ -11,6 +11,37 @@ A simple Python Flask web application which helps keep track of your stored item
 
 </div>
 
+## Features
+
+- Responsive web-based user interface
+- Easy, simple location editing
+- Search by stored item
+- Sort locations by different attributes:
+   - description
+   - location (eg. Office, Garage, etc)
+   - type (eg. Shelf, Plastic Box, etc)
+   - recently edited
+   - unique ID
+   - how used (% full)
+- QR codes to assist location tracking based on unique ID
+- Print QR code labels from website
+- Simple JSON storage (pros & cons)
+
+
+## Screenshots
+
+### Home Page
+
+<img src="static/screenshots/home-page.png"/>
+
+*Note that QR scanning is available on mobile phones / tablets only - due to my design decision for simplicity.*
+
+### Viewing a Location
+
+<img src="static/screenshots/view-page.png"/>
+
+**More coming soon - does anyone know a quick way to generate this type of demo image?**
+
 ## Installation - Native Python
 
 *These steps describe how I set it up. I use a linux terminal so under Windows there may be minor step inaccuracies.*
