@@ -24,7 +24,6 @@ h1 { margin: 0.25em 0; }
 h2 { margin: 0.2em 0; }
 h3 { margin: 0.1em 0; }
 
-.item, input{ line-height: 1; }
 .item{
   display: inline-block;
   padding: 0.8rem 1rem;
@@ -46,13 +45,6 @@ label {white-space: nowrap;}
   .hide-not-on-phone { display: none; }
 }
 
-.button {
-  padding: 0.75rem 1.5rem;
-}
-.button+.button {
-  margin-left: 0.5rem;
-}
-
 .button.outline {
   background-color: transparent;
 }
@@ -60,6 +52,7 @@ label {white-space: nowrap;}
   border-color: var(--color-error);
   color: var(--color-error);
 }
+button { font-weight: normal !important; }
 
 .disable-small-100 { 
   flex: 1 !important; 
@@ -71,8 +64,9 @@ label {white-space: nowrap;}
 .pill > *:not(:last-child) { margin-right: 1px; }
 .pill > *:first-child { border-bottom-left-radius: 0.4em; border-top-left-radius: 0.4em; }
 .pill > *:last-child { border-bottom-right-radius: 0.4em; border-top-right-radius: 0.4em; }
-
 .pill > *:last-child { background-color: var(--color-primary); }
+
+select { background-color: #ffffff; line-height: 1; padding: 1rem 1rem; color: var(--font-color) }
 
 /* login pages */
 

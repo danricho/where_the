@@ -106,30 +106,62 @@ def new_loc():
 #              FUNCTION TO TEXT SEARCH ITEMS               #
 ############################################################
 
-def find_item(findstr):
-  def simple_string(complex_string):
-    pattern = re.compile('[^a-z0-9 *?]+', re.IGNORECASE)
-    return pattern.sub('', complex_string)
+def search_locs(term, mode="any"):  
+
   global locs
   load_json()
-  result = {"query": findstr, "results": {}}
 
-  findstr = "*" + findstr + "*"
-  findstr = simple_string(findstr)
-  findstr = findstr.replace("*", ".*").replace("?", ".")
+  results = {}
+  term = term.upper().strip()
 
-  result['regex'] = findstr
-  regex = re.compile(findstr, re.IGNORECASE)
-  
-  for loc in locs:
-    matching_items = [itm for itm in locs[loc]['items'] if re.match(regex, simple_string(itm))]
-    # print(loc, matching_items)
-    if len(matching_items):
-      result['results'][loc] = locs[loc]
-      result['results'][loc]['items'] = matching_items
-      result['results'][loc]['match_count'] = len(matching_items)
-      matching_items = []
-  return result
+  if mode in ["any", "all"]:
+    term = re.sub(r'[^a-zA-Z0-9 ]+', ' ', term, flags=re.IGNORECASE)
+    term = term.split()    
+
+  for loc in list(locs.values()):
+    this_id = loc['id'] 
+    if mode in ["any", "all"]:
+      word_pool = str(list(loc.values()))
+      word_pool = re.sub(r'[^a-zA-Z0-9 ]+', ' ', word_pool, flags=re.IGNORECASE)    
+      word_pool = " ".join(word_pool.split()).upper()     
+
+    if mode == "any":
+      if any(x in word_pool for x in term):
+        if this_id not in results:
+          results[this_id] = dict(loc)
+          results[this_id]['items'] = []
+      matching_items = [item for item in loc['items'] if any(x in item.upper() for x in term)]
+      if len(matching_items):
+        if this_id not in results:
+          results[this_id] = dict(loc)
+          results[this_id]['items'] = []
+        results[this_id]['items'] = matching_items
+      
+    elif mode == "all":
+      if all(x in word_pool for x in term):
+        if this_id not in results:
+          results[this_id] = dict(loc)
+          results[this_id]['items'] = []
+      matching_items = [item for item in loc['items'] if any(x in item.upper() for x in term)]
+      if len(matching_items):
+        if this_id not in results:
+          results[this_id] = dict(loc)
+          results[this_id]['items'] = []
+        results[this_id]['items'] = matching_items
+
+    elif mode == "re":
+      word_pool = str(list(loc.values())).upper()
+      if re.search(term, word_pool):
+        results[this_id] = dict(loc)
+        results[this_id]['items'] = []
+      for item in loc['items']:
+        if re.search(term, item.upper()):
+          if this_id not in results:
+            results[this_id] = dict(loc)
+            results[this_id]['items'] = []
+          results[this_id]['items'].append(item)
+
+  return {"search": (mode, term), "results": list(results.values())}
 
 ############################################################
 # EXCEPTION FOR FLASK REQUESTS WITH NOT MATCHING LOCATION  #
@@ -247,8 +279,8 @@ def home():
     return render_template('home.j2.html', locs=sorted_locs, sorted_str=sort_descriptions[sorting], SITE=config['SITE'], username=username)
 
   else: # SEARCH FUNCTION    
-    search_str = dict(request.form)['search-input']
-    return render_template('search.j2.html', results=find_item(search_str), SITE=config['SITE'])    
+    submit_data = dict(request.form)
+    return render_template('search.j2.html', form_data=submit_data, results=search_locs(submit_data['search-input'], mode=submit_data["search-mode-select"]), SITE=config['SITE'])    
 
 @app.route(config['SITE']['PATH_PREFIX'] + '/cycle-sort')
 @login_required

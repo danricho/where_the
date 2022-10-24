@@ -10,14 +10,22 @@
   <section>
     <h2>Search for an Item</h2>
     <form id="search" method="post">
-    <p class="grouped" style="margin: 0;">
-      <input type="text" name="search-input" id="search-input" placeholder="Search for what?" value="{{results.query}}">
-      <button type="submit" class="button primary">Search</button>
-    </p>  
+      <div class="row responsive-search-form">
+        <div class="col-12 col-6-md col-7-lg">
+          <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query..." value="{{form_data['search-input']}}">
+        </div>
+        <div class="col-6 col-4-md col-3-lg">
+          <select class="is-full-width" id="search-mode-select" name="search-mode-select">
+            <option value="any"{% if form_data['search-mode-select'] == "any" %} selected{% endif %}>Keywords - Match ANY</option>
+            <option value="all"{% if form_data['search-mode-select'] == "all" %} selected{% endif %}>Keywords - Match ALL</option>
+            <option value="re"{% if form_data['search-mode-select'] == "re" %} selected{% endif %}>Regular Expression</option>
+          </select>
+        </div>
+        <div class="col-6 col-2-md">
+          <button type="submit" class="button primary is-full-width">Search</button>
+        </div>
+      </div>
     </form>
-
-    <p class="grouped" style="margin: 0;"><small>wildcards: ? * | case/punctuation ignored</small></p>
-    <p class="grouped" style="margin: 0;"><small>Examples: <i>Lego*, Lego Mini?igure, SMD*Res*0805</i></small></p>
   
   </section>
 
@@ -25,19 +33,16 @@
   <section>
     <div class="row">
       <div class="col is-vertical-align disable-small-100">
-        <h2>Results</h2>
-      </div>
-      <div class="col is-right is-vertical-align disable-small-100">
-        <span>Most matching items first</span>
+        <h2>{{results.results|length}} Result{% if results.results|length != 1 %}s{% endif %}</h2>
       </div>
     </div>
     
-    {% for loc in results.results.values() %}  
+    {% for loc in results.results %}  
       <fieldset style="margin: 1rem 0;">
         <legend>{{loc.id}}</legend>
         <h3>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.location != "" %} | {{loc.location}}{% endif %}</h3>
         <div id="item-list" style="margin: 0;">
-        <div style="margin: 0.5rem 0;"><strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}:</strong></div>
+        <div style="margin: 0.5rem 0;"><strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}{% if loc['items'] | length > 0 %}:{%endif%}</strong></div>
         {% for item in loc['items'] | sort %}
           <div style="margin: 0.5rem 0;">
             <span class="item">
@@ -52,13 +57,6 @@
 
     {% endfor %}
     
-  </section>
-
-  <section>  
-    <p><small><i>Regex used: <code>{{results.regex}}</code></i></small></p> 
-    <div style="margin: 1rem 0;">
-      <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
-    </div>
   </section>
   
 </div>
