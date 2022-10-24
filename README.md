@@ -100,7 +100,6 @@ Please propose and discuss ideas [here](https://github.com/danricho/where_the/di
 
 My ideas so far (most would be choosen via a `config.yml` option):​
 - Add `Dark Mode` to Chota CSS, which is very easy (as per the Chota webpage) and a toggle for it in the fixed header
-- Remove oldest daily backups until less then X number are there... rolling buffer type thing... again easy.
 - Add additional storage options other than raw JSON file  - [discussion](https://github.com/danricho/where_the/discussions/3)
 - Improve `Flask-Login` implementation - [discussion](https://github.com/danricho/where_the/discussions/5)
 - UI improvements - [discussion](https://github.com/danricho/where_the/discussions/9)

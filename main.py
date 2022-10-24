@@ -45,6 +45,7 @@ app.config['LOGIN_DISABLED'] = config['FLASK']['LOGIN_DISABLED']
 ############################################################
 
 # TODO: ADD OPTION FOR TINYDB / YAML / JSON STORAGE
+
 locs = {}
 def load_json():
   global locs
@@ -57,10 +58,17 @@ def load_json():
   daily_backup()
 # backup will only occur if the site is being used...
 def daily_backup():
-  today = date.today().strftime("%Y-%m-%d")
-  if not os.path.exists(base_path + f'/data_bkp/{today}_bkp_data.json'):
-    with open(base_path + f'/data_bkp/{today}_bkp_data.json', 'w') as outfile:
+  max_backups = 14
+  backup_datetime_format = "%Y-%m-%d"
+  backups_directory = 'data_bkp/'
+  today_bkp_filename = f'{datetime.now().strftime(backup_datetime_format)}_data.bkp.json'
+  if not os.path.exists(f'{base_path}/{backups_directory}{today_bkp_filename}'):
+    with open(f'{base_path}/{backups_directory}{today_bkp_filename}', 'w') as outfile:
       outfile.write(json.dumps(locs, indent=4))
+  files = sorted([f for f in os.listdir(f'{base_path}/{backups_directory}') if "bkp" in f])
+  while len(files) > max_backups:
+    os.remove(f'{base_path}/{backups_directory}{files[0]}')
+    files = sorted([f for f in os.listdir(f'{base_path}/{backups_directory}') if "bkp" in f])
 def save_json():
   with open(base_path + '/data.json', 'w') as outfile:
     outfile.write(json.dumps(locs, indent=4))
