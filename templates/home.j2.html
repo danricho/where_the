@@ -91,10 +91,8 @@
 
     {% if username != "" %}
     <p>
-      Logged in as <strong>{{username}}</strong>. 
-    </p>
-    <p>
-      <button id="logout-button" class="button outline error" style="margin-bottom: 2em;">Logout</button>
+      Logged in as <strong>{{username}}</strong>.     
+      <button id="logout-button" class="button outline error" style=" margin-left: 2em;">Logout</button>
       <script>
         $("#logout-button").click(function(){
           if ($(this).text() == "Confirm Logout?"){ location.href='{{url_for('logout')}}' }

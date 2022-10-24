@@ -6,9 +6,7 @@
   <section>
     <h2>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h2>
     <p><small> ID: {{loc.id}}</small></p>  
-  
-  </section>
-  <section>
+
     <fieldset style="margin: 1rem 0;">
       <legend>Location Information</legend>
       
@@ -41,14 +39,13 @@
       </div>      
 
     </fieldset>
-    <p><small>Location Last Updated: <i>{{loc.last_change}}</i></small></p>
-  </section>
-  <section>
-    <div style="margin: 0;">
-      <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
-      <button class="button primary" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR code</button>
+    <div style="margin: 1.5em 0;">
+      <button class="button primary" onclick="location.href='{{url_for('home')}}'">Home</button>
+      <button class="button primary" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR</button>
       <button class="button primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
     </div>
+    <p><small>Location Last Updated: <i>{{loc.last_change}}</i></small></p>
+    
   </section>
 </div>
 </div>

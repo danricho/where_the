@@ -27,8 +27,9 @@ A simple Python Flask web application which helps keep track of your stored item
 - Print QR code labels from website
 - Simple JSON storage (pros & cons)
 
+## Screenshots - Out of date already!
 
-## Screenshots
+**Does anyone know a quick way to generate this type of demo image?**
 
 ### Home Page
 
@@ -40,7 +41,7 @@ A simple Python Flask web application which helps keep track of your stored item
 
 <img src="static/screenshots/view-page.png"/>
 
-**More coming soon - does anyone know a quick way to generate this type of demo image?**
+**Update and more pages coming soon**
 
 ## Installation - Native Python
 

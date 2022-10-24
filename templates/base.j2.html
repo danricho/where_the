@@ -41,9 +41,9 @@
     
     <!-- TODO: DARK MODE -->  
 
-    <div class="no-print">
+    <div class="no-print footer">
       <div class="container" style="border-top: 1px solid var(--color-primary); padding-top: 1em; padding-bottom: 1em;">
-        
+        {% block footer_pills %}
         <p>
           {{ link_pill("https://danricho.com", ["built by", "danricho"]) }}
           {{ link_pill("https://en.wikipedia.org/wiki/2022", ["built in", "2022"]) }}
@@ -58,6 +58,7 @@
           {{ link_pill("https://jquery.com/", ["built with", "JQuery 3.5.1"]) }}
           {{ link_pill("https://jenil.github.io/chota/", ["built with", "Chota CSS"]) }}
         </p>
+        {% endblock %}
         <p>
           <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
         </p>
@@ -65,7 +66,8 @@
       </div>
     </div>
     <script>
-      $('.main').css('padding-top', $('.fixed-top').height())
+      $('.main').css('padding-top', $('.fixed-top').height());
+      $('.is-full-screen').css('margin-bottom', -$('.footer').height());
     </script>
 
 
