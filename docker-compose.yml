@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  web-app:
+    build:
+      context: .
+    image: where_the
+    container_name: where_the
+    restart: unless-stopped
+    ports:
+      - 5055:5000 # the second needs to match the port in config.yml
+    volumes:
+       - ./config.yml:/srv/config.yml # configuration and user settings
+       - ./data.json:/srv/data.json # data file
+       - ./data_bkp:/srv/data_bkp # data backup directory

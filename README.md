@@ -56,16 +56,25 @@ A simple Python Flask web application which helps keep track of your stored item
 1.  Install dependencies via pip into your venv.
     eg: `venv/bin/pip install -r requirements.txt` or activate venv then `pip install -r requirements.txt` 
 
-1.  Create a `config.yml` and update according it to your setup - see the [Configuration section](#configuration-configyml).
+1.  Create `config.yml` and update according it to your setup - see the [Configuration section](#configuration-configyml).
 
-1.  Install `main.py` in your venv.
+1.  Run `main.py` in your venv.
     eg: `venv/bin/python main.py` or activate venv then `python main.py` 
 
 ## Installation - Docker Compose
 
 *Running in Docker is a quick way to get this to run as a service (launches on boot etc).*
 
-**Coming soon**
+1. Clone repo to a local directory.
+   eg: `git clone https://github.com/danricho/where_the.git where_the`
+
+1. Create `config.yml` and update according to the [Configuration section](#configuration-configyml). This file is mounted within the docker image but saved here outside it (to keep data between docker sessions)
+
+1. Create `data.json` and set the content to `{}`. This file is mounted within the docker image but saved here outside it (to keep data between docker sessions)
+
+1. Run the docker container using the command `docker-compose up -d`. 
+
+1. To troubleshoot the container it may help to see it's logs: `docker logs where_the`
 
 ## Configuration (config.yml)
 
