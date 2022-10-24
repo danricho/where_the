@@ -55,7 +55,7 @@ A simple Python Flask web application which helps keep track of your stored item
 1.  Install dependencies via pip into your venv.
     eg: `venv/bin/pip install -r requirements.txt` or activate venv then `pip install -r requirements.txt` 
 
-1.  Rename `config.default.yml` to `config.yml` and update according it to your setup - see the [Configuration section](#configuration-configyml).
+1.  Create a `config.yml` and update according it to your setup - see the [Configuration section](#configuration-configyml).
 
 1.  Install `main.py` in your venv.
     eg: `venv/bin/python main.py` or activate venv then `python main.py` 

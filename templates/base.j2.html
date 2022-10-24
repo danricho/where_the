@@ -50,7 +50,7 @@
           <a href="https://github.com/mebjas/html5-qrcode"><img src="https://img.shields.io/badge/built using-HTML5 QRCode-C0A890?labelColor=a0a0a0&style=flat" alt="Built using HTML5 QRCode"></a>
           <a href="https://jquery.com/"><img src="https://img.shields.io/badge/built using-JQuery 3.5.1-C0A890?labelColor=a0a0a0&style=flat" alt="Built using JQuery 3.5.1"></a>
           <a href="https://jenil.github.io/chota/"><img src="https://img.shields.io/badge/built using-Chota CSS-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Chota CSS"></a><br/>
-          <small class="text-light">Git Revision: {{git_revision}}</small>
+          <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
         </p>
         
       </div>

@@ -7,7 +7,12 @@ from flask_login import LoginManager, login_user, logout_user, login_required, U
 from flask_qrcode import QRcode
 
 base_path = os.path.dirname(os.path.realpath(__file__))
-git_revision = subprocess.check_output(["git", "describe", "--always"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode()
+git_revision = {
+  "hash": subprocess.check_output(["git", "show", "-s", "--format=%h"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
+  "timestamp": subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%Y-%m-%d %H:%M:%S"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
+  "subject": subprocess.check_output(["git", "show", "-s", "--format=%s"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
+  "modified": bool(len(subprocess.check_output(["git", "diff"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode()))
+}
 
 ############################################################
 #              LOADING CONFIG FROM YAML FILE               #
