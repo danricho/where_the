@@ -66,6 +66,13 @@ label {white-space: nowrap;}
   margin: 0 calc(var(--grid-gutter)/2);
 }
 
+.pill { display: inline-block; color: #fff; font-size: 0.7em; margin: 0.25em 0; }
+.pill > * { padding: 0.25em 0.7em; background-color: #a0a0a0; white-space: nowrap;}     
+.pill > *:not(:last-child) { margin-right: 1px; }
+.pill > *:first-child { border-bottom-left-radius: 0.4em; border-top-left-radius: 0.4em; }
+.pill > *:last-child { border-bottom-right-radius: 0.4em; border-top-right-radius: 0.4em; }
+
+.pill > *:last-child { background-color: var(--color-primary); }
 
 /* login pages */
 
