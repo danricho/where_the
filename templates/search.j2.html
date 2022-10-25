@@ -4,7 +4,7 @@
   <div class="container">
 
     <section>
-      <h3 class="bottom-margin-05">Text Search for Item/Location</h3>
+      <h3 class="bottom-margin-05">Text Search for Items/Locations</h3>
       <form id="search" method="post">
         <div class="row">
           <div class="col-12 col-6-md col-7-lg">
@@ -23,6 +23,7 @@
         </div>
       </form>
 
+      {% if results!=None %}
       <h3 class="top-margin-15">{{results.results|length}} Result{% if results.results|length != 1 %}s{% endif %}</h3>
       
       {% for loc in results.results %}  
@@ -40,10 +41,13 @@
         </fieldset>
 
       {% endfor %}
+
+      {% endif %}
+      
       
     </section>
 
-    <p><br/><button class="button primary is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
+    <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
 
 
     

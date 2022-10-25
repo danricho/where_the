@@ -1,0 +1,45 @@
+{% extends "base.j2.html" %}
+{% block main %}
+<main>  
+  <div class="container">
+
+    <section>
+      <div class="row">
+        <div class="col disable-small-reduction">
+          <h3>Location List</h3>
+        </div>
+        <div class="col is-right disable-small-reduction">
+          <span><a href="{{url_for('cycle_sort')}}">Sorted by: {{sorted_str}}</a></span>
+        </div>
+      </div>
+      
+      {% if locs | length %}
+      {% for loc in locs %}  
+
+        <fieldset>
+          <legend>{{loc.id}}</legend>
+          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
+          <p class="bottom-margin-05">
+            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
+            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+            <br />
+            <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
+            {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
+            {{loc.fullness}}% Used</span>
+            <br />
+            <button class="button primary is-full-width" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
+            {% if sorted_str == "Last Updated" %}<br /><small class="text-light">Last Updated: {{loc.last_change}}</small>{% endif %}
+          </p>          
+        </fieldset>
+
+      {% endfor %}
+      {% else %}
+      <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
+      {% endif %}
+
+      <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
+    </section>
+
+    
+</main>
+{% endblock %}

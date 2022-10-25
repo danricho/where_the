@@ -248,54 +248,70 @@ def logout():
 #    DECORATED FUNCTIONS FLASK ROUTING AND PAGE SERVING    #
 ############################################################
 
-sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
-# home page / list locations and search results
-@app.route(config['SITE']['PATH_PREFIX'] + '/', methods=['GET', 'POST'])
+# home page
+@app.route(config['SITE']['PATH_PREFIX'] + '/')
 @login_required
 def home():
-  if request.method == "GET": # HOME PAGE    
-    global locs
-    load_json()    
-    
-    username = ""
-    sorting = 0 # default to location
+  global locs
+  load_json()    
+  
+  username = ""
+  load_config()
+  for id in config['USERS']:
+    if hasattr(current_user, 'username'):
+      username = current_user.username
+  
+  return render_template('home.j2.html', SITE=config['SITE'], username=username)
+  
+sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
+# list locations
+@app.route(config['SITE']['PATH_PREFIX'] + '/list')
+@login_required
+def list_locs():
+  global locs
+  load_json()    
 
-    load_config()
-    for id in config['USERS']:
-      if hasattr(current_user, 'username'):
-        username = current_user.username
-        if current_user.username == config['USERS'][id]['username']:
-          if "LOCATION_SORTING" in config['USERS'][id]:
-            sorting = config['USERS'][id]["LOCATION_SORTING"]
-    # print(list(locs.values())[0])
-    if sort_descriptions[sorting] == "Location":    
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (i['location'], i['description'])))
-      # print([(i['location'], i['description']) for i in sorted_locs])
-    elif sort_descriptions[sorting] == "ID":
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (i['id'])))
-      # print([(i['id']) for i in sorted_locs])
-    elif sort_descriptions[sorting] == "% Full":
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (-i['fullness'], i['description'])))
-      # print([(i['fullness'], i['description']) for i in sorted_locs])
-    elif sort_descriptions[sorting] == "Description":
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (i['description'])))
-      # print([(i['description']) for i in sorted_locs])
-    elif sort_descriptions[sorting] == "Last Updated":
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (i['last_change']), reverse=True))
-      # print([(i['last_change']) for i in sorted_locs])
-    elif sort_descriptions[sorting] == "Type":
-      sorted_locs = list(sorted(locs.values(), key=lambda i: (i['type'])))
-      # print([(i['last_change']) for i in sorted_locs])
+  sorting = 0 # default sort to location
+  load_config()
+  for id in config['USERS']:
+    if hasattr(current_user, 'username'):
+      if current_user.username == config['USERS'][id]['username']:
+        sorting = config['USERS'][id].get("LOCATION_SORTING", 0)
 
-    for loc in sorted_locs:
-      loc['last_change'] = datetime.fromtimestamp(loc['last_change']).strftime("%-I:%M %p, %d %B %Y")
+  # print(list(locs.values())[0])
+  if sort_descriptions[sorting] == "Location":    
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (i['location'], i['description'])))
+    # print([(i['location'], i['description']) for i in sorted_locs])
+  elif sort_descriptions[sorting] == "ID":
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (i['id'])))
+    # print([(i['id']) for i in sorted_locs])
+  elif sort_descriptions[sorting] == "% Full":
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (-i['fullness'], i['description'])))
+    # print([(i['fullness'], i['description']) for i in sorted_locs])
+  elif sort_descriptions[sorting] == "Description":
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (i['description'])))
+    # print([(i['description']) for i in sorted_locs])
+  elif sort_descriptions[sorting] == "Last Updated":
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (i['last_change']), reverse=True))
+    # print([(i['last_change']) for i in sorted_locs])
+  elif sort_descriptions[sorting] == "Type":
+    sorted_locs = list(sorted(locs.values(), key=lambda i: (i['type'])))
+    # print([(i['last_change']) for i in sorted_locs])
 
-    # reverse=True    
-    return render_template('home.j2.html', locs=sorted_locs, sorted_str=sort_descriptions[sorting], SITE=config['SITE'], username=username)
+  for loc in sorted_locs:
+    loc['last_change'] = datetime.fromtimestamp(loc['last_change']).strftime("%-I:%M %p, %d %B %Y")
 
-  else: # SEARCH FUNCTION    
+  return render_template('list.j2.html', locs=sorted_locs, sorted_str=sort_descriptions[sorting], SITE=config['SITE'])
+
+@app.route(config['SITE']['PATH_PREFIX'] + '/search', methods=['GET', 'POST'])
+@login_required
+def search():
+  if request.method == "GET": # FORM ONLY  
+    return render_template('search.j2.html', form_data={}, results=None)
+
+  else: # SEARCH FUNCTION
     submit_data = dict(request.form)
-    return render_template('search.j2.html', form_data=submit_data, results=search_locs(submit_data['search-input'], mode=submit_data["search-mode-select"]), SITE=config['SITE'])    
+    return render_template('search.j2.html', form_data=submit_data, results=search_locs(submit_data['search-input'], mode=submit_data["search-mode-select"])) 
 
 @app.route(config['SITE']['PATH_PREFIX'] + '/cycle-sort')
 @login_required
@@ -311,7 +327,7 @@ def cycle_sort():
         if config['USERS'][id]["LOCATION_SORTING"] == len(sort_descriptions):
           config['USERS'][id]["LOCATION_SORTING"] = 0
   save_config()
-  return redirect(url_for("home")) 
+  return redirect(url_for("list_locs")) 
 
 @app.route(config['SITE']['PATH_PREFIX'] + '/scan/<string:url_id>')
 @login_required
@@ -397,7 +413,7 @@ def send_static(path):
     return send_from_directory('static', path)
 
 # error page generator - comment decortaor to see errors in terminal
-@app.errorhandler(Exception)
+# @app.errorhandler(Exception)
 def handle_error(e):
   error_info = {}
   try:

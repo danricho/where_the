@@ -57,8 +57,8 @@ button { font-weight: normal !important; }
 .button.outline.error { border-color: var(--color-error); color: var(--color-error); }
 .button.outline.error:hover { background-color: var(--color-error); color: #fff; }
 .button.outline { background-color: transparent; }
-.button.outline.primary { border-color: var(--color-error); color: var(--color-error); }
-.button.outline.primary:hover { background-color: var(--color-error); color: #fff; }
+.button.outline.primary { border-color: var(--color-primary); color: var(--color-primary); }
+.button.outline.primary:hover { background-color: var(--color-primary); color: #fff; }
 
 /* meter */
 .meter-holder { 

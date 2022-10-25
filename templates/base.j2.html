@@ -55,7 +55,7 @@
     {% endblock %}
 
     {% block footer %}
-    <footer>
+    <footer class="text-center">
       <div class="container">
         <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
       </div>

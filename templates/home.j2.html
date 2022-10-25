@@ -3,11 +3,13 @@
 <main>  
   <div class="container">
 
+    <section class="text-center">
+      <img id="logo" src="{{url_for('send_static', path="logo.svg")}}" style="max-width: 150px;"/>
+    </section>
 
-    <section><!--  class="hide-not-on-phone"> -->
-      <h3>Find a Location with QR</h3>  
+    <section class="hide-not-on-phone">
       <div id="qr-reader" class="is-full-width"></div>
-      <button id="scanning-control" type="button" class="button primary is-full-width">Start Camera</button>
+      <button id="scanning-control" type="button" class="button primary outline is-full-width">Scan QR Code</button>
       <script>
         const html5QrCode = new Html5Qrcode("qr-reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
@@ -15,12 +17,14 @@
         };
         const config = { fps: 5, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] };
         $('#scanning-control').click(function(){
-          if ($(this).text()=="Start Camera"){
-            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-            $(this).text("Stop Camera")
+          if ($(this).text()=="Scan QR Code"){
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);            
+            $("#logo").hide();
+            $(this).text("Stop Camera");
           } else {
             html5QrCode.stop().then((ignore) => {
-              $(this).text("Start Camera")
+              $("#logo").show();
+              $(this).text("Scan QR Code")
             }).catch((err) => { // Stop failed, handle it.
             });
           }
@@ -29,72 +33,21 @@
     </section>
 
     <section>
-      <h3>Text Search for Item/Location</h3>
-      <form id="search" method="post">
-        <div class="row">
-          <div class="col-12 col-6-md col-7-lg">
-            <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query...">
-          </div>
-          <div class="col-6 col-4-md col-3-lg">
-            <select class="is-full-width" id="search-mode-select" name="search-mode-select">
-              <option value="any">Keywords - Match ANY</option>
-              <option value="all">Keywords - Match ALL</option>
-              <option value="re">Regular Expression</option>
-            </select>
-          </div>
-          <div class="col-6 col-2-md">
-            <button type="submit" class="button primary is-full-width">Search</button>
-          </div>
-        </div>
-      </form>
+      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('search')}}'">Text Search for Items/Locations</button>
     </section>
 
     <section>
-      <div class="row">
-        <div class="col disable-small-reduction">
-          <h3>Location List</h3>
-        </div>
-        <div class="col is-right disable-small-reduction">
-          <span><a href="{{url_for('cycle_sort')}}">Sorted by: {{sorted_str}}</a></span>
-        </div>
-      </div>
-      
-      {% if locs | length %}
-      {% for loc in locs %}  
-
-        <fieldset>
-          <legend>{{loc.id}}</legend>
-          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
-          <p class="bottom-margin-05">
-            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
-            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
-            <br />
-            <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
-            {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
-            {{loc.fullness}}% Used</span>
-            <br />
-            <button class="button primary is-full-width" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
-            {% if sorted_str == "Last Updated" %}<br /><small class="text-light">Last Updated: {{loc.last_change}}</small>{% endif %}
-          </p>          
-        </fieldset>
-
-      {% endfor %}
-      {% else %}
-      <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
-      {% endif %}
+      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('list_locs')}}'">List all Locations</button>
     </section>
    
     <section>
-      <h3>Setup New Location</h3>  
-      <button class="button primary is-full-width" onclick="location.href='{{url_for('create')}}'">Create New Location</button>
+      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('create')}}'">Setup a New Location</button>
     </section>
 
     {% if username != "" %}
     <section>
-      
-      <h3>User</h3> 
-      <p class="top-margin-05 bottom-margin-05">Currently logged in as <strong>{{username}}</strong>.</p>
-      <p><button class="button primary is-full-width" disabled>User Settings</button></p>
+      <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{username}}</strong>.</p>
+      <p><button class="button primary outline is-full-width" disabled>User Settings</button></p>
       <p><button id="logout-button" class="button outline error is-full-width">Logout</button></p>
       <script>
         $("#logout-button").click(function(){
