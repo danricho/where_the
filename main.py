@@ -31,6 +31,7 @@ load_config()
 
 # done this way for backward compatibility of config.yml and to create defaults
 config['PRIMARY-COLOR'] = config.get('PRIMARY-COLOR', '#C0A890') 
+config['DISABLE-QR-LOGO'] = config.get('DISABLE-QR-LOGO', False)
 save_config()
 
 ############################################################
@@ -418,7 +419,8 @@ def handle_error(e):
 def inject_data():    
   return {
     'git_revision': git_revision,
-    'PRIMARY_COLOR': config['PRIMARY-COLOR'] 
+    'PRIMARY_COLOR': config['PRIMARY-COLOR'],
+    'DISABLE_QR_LOGO': config['DISABLE-QR-LOGO'],    
   }
 
 

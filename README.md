@@ -80,6 +80,7 @@ A simple Python Flask web application which helps keep track of your stored item
 
 ```yaml
 PRIMARY-COLOR: '#C0A890'
+DISABLE-QR-LOGO: false
 
 FLASK: # These are Flask configuration settings
   HOST: 0.0.0.0

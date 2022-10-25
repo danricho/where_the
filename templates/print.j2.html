@@ -12,12 +12,13 @@
     <section class="to-print">
     <div>
       <div class="ident">{{loc.id}}</div>
+      {% if DISABLE_QR_LOGO %}
+      <img src="{{ qrcode(SITE.BASE_URL + SITE.PATH_PREFIX + '/scan/' + loc.id, error_correction='H', box_size=12, border=0) }}">
+      {% else %}
       <img src="{{ qrcode(SITE.BASE_URL + SITE.PATH_PREFIX + '/scan/' + loc.id, error_correction='H', box_size=12, border=0, icon_img='logo.png') }}">
+      {% endif %}
     </div>
-    <!-- <div>
-      <div class="ident">{{loc.id}}</div>
-      <img src="{{ qrcode(SITE.BASE_URL + SITE.PATH_PREFIX + '/scan/' + loc.id, error_correction='H', box_size=12, border=0, icon_img='logo.png') }}">
-    </div> -->
+    <!-- TODO: ADD LAYOUT OPTIONS AND BATCH PRINTING -->
     </section>
 
     <section>
