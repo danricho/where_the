@@ -119,3 +119,8 @@ My ideas so far (most would be choosen via a `config.yml` option):​
 - Code improvements - [discussion](https://github.com/danricho/where_the/discussions/7)
 
 I welcome contributions to these with Pull requests!
+
+## Change Log
+
+See [changelog](changelog.md) for a history of changes.
+
