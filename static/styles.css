@@ -29,10 +29,9 @@ footer {
 
 main { padding: 1em 0; }
 section { padding: 1em 0; }
-fieldset { margin: 1em 0; }
-fieldset:first { margin-top: 0.5em; }
+fieldset { margin-bottom: 1em; }
 .col.disable-small-reduction { flex: 1 !important; margin: 0 calc(var(--grid-gutter)/2); }
-h1, h2, h3, h4, h6 { margin: 0; }
+h1, h2, h3, h4, h6 { margin: 0.25em 0; }
 
 .bottom-margin-05 { margin-bottom: 0.5em; }
 .top-margin-05 { margin-top: 0.5em; }

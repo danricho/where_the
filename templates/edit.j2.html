@@ -9,30 +9,30 @@
   
       <form method="post">
   
-      <fieldset style="margin: 1rem 0;">
+      <fieldset>
         <legend>Location Information</legend>
-        <p style="margin: 1rem 0;">
+        <p>
           <label for="description-input">Description</label>
           <input id="description-input" name="description-input" type="text" placeholder="Description of location" value="{% if loc.description != "" %}{{loc.description}}{% endif %}" />
           <small>Examples: <i>I.T. Equipment, Toys, Books</i></small>
         </p>      
-        <p style="margin: 1rem 0;">
+        <p>
           <label for="location-input">Where</label>
           <input id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
           <small>Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></small>
         </p>
-        <p style="margin: 1rem 0;">
+        <p>
           <label for="type-input">Type</label>
           <input id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
           <small>Examples: <i>Box-Cardboard-Moving-104L, Box-Plastic-Clear-32L, Box-Plastic-Tough, Safe-Fireproof, Shelf-Henry</i></small>
         </p>
-        <p style="margin: 1rem 0;">
+        <p>
           <label for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
           <input id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="10" max="100" />
         </p>
       </fieldset>
       
-      <fieldset style="margin: 1rem 0;">
+      <fieldset>
         <legend>Stored Items</legend>
         <div id="item-list">
           {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a href="#" onclick="remove(this); return false;">✖</a></span></div>{% endfor %}  
@@ -45,17 +45,7 @@
           </p>   
         </div>
   
-      </fieldset>
-      
-      <fieldset class="bottom-padding-15">
-        <legend>{{loc['items'] | length}} Stored Item{% if loc['items'] | length != 1 %}s{%endif%}</legend>
-        
-        {% if loc['items'] | length %}
-        {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}  
-        {% else %}
-        <p>No items yet. <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> to add some!</p>
-        {% endif %}    
-      </fieldset>
+      </fieldset>    
 
       <p><button type="submit" class="is-full-width button primary">Save</button></p>
       <p><button type="button" class="is-full-width button cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button></p>
