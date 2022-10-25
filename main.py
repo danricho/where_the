@@ -17,15 +17,21 @@ git_revision = {
 ############################################################
 #              LOADING CONFIG FROM YAML FILE               #
 ############################################################
-config = {}
+
 def load_config():
   global config
   with open(base_path + "/config.yml", "r") as f:
     config = yaml.safe_load(f)
-load_config()
 def save_config():
   with open(base_path + "/config.yml", "w") as f:
     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+
+config = {}
+load_config()
+
+# done this way for backward compatibility of config.yml and to create defaults
+config['PRIMARY-COLOR'] = config.get('PRIMARY-COLOR', '#C0A890') 
+save_config()
 
 ############################################################
 #                   INITIALISE FLASK APP                   #
@@ -411,7 +417,8 @@ def handle_error(e):
 @app.context_processor
 def inject_data():    
   return {
-    'git_revision': git_revision    
+    'git_revision': git_revision,
+    'PRIMARY_COLOR': config['PRIMARY-COLOR'] 
   }
 
 

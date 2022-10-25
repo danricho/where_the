@@ -79,6 +79,8 @@ A simple Python Flask web application which helps keep track of your stored item
 ## Configuration (config.yml)
 
 ```yaml
+PRIMARY-COLOR: '#C0A890'
+
 FLASK: # These are Flask configuration settings
   HOST: 0.0.0.0
   PORT: '5000'
