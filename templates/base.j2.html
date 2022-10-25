@@ -26,50 +26,47 @@
     <link rel="stylesheet" href="{{url_for('send_static', path='chota.0.7.2.min.css')}}">
     <link rel="stylesheet" href="{{url_for('send_static', path='styles.css')}}">
 
+    <style>
+      /* Configurable styles */
+      :root { --color-primary: #C0A890 !important; }
+    </style>
 
     <script src="{{url_for('send_static', path='jquery.3.5.1.min.js')}}"></script>
     <script src="{{url_for('send_static', path='html5-qrcode.min.js')}}"></script>
   </head>  
-  <body class="dark">
+
+  <!-- TODO: DARK MODE -->  
+  <body>
     
-    <div class="fixed-top no-print">
+    {% block header %}
+    <header>
       <div class="container">
-        <h1><a style="color: #FFF;" href="{{url_for('home')}}">Where The ?!?</a></h1>
+        <a style="color: #FFF;" href="{{url_for('home')}}">Where The ?!?</a>
       </div>
-    </div>
-    {% block main_content %}{% endblock %}
-    
-    <!-- TODO: DARK MODE -->  
-
-    <div class="no-print footer">
-      <div class="container" style="border-top: 1px solid var(--color-primary); padding-top: 1em; padding-bottom: 1em;">
-        {% block footer_pills %}
-        <p>
-          {{ link_pill("https://danricho.com", ["built by", "danricho"]) }}
-          {{ link_pill("https://en.wikipedia.org/wiki/2022", ["built in", "2022"]) }}
-          {{ link_pill("https://choosealicense.com/licenses/gpl-3.0/", ["released under", "GNU GPLv3"]) }}
-          {{ link_pill("https://github.com/danricho/where_the", ["source available on", "GitHub"]) }}
-        <br />
-          {{ link_pill("https://www.python.org/", ["built with", "Python 3"]) }}
-          {{ link_pill("https://flask.palletsprojects.com/", ["built with", "Flask"]) }}
-          {{ link_pill("https://flask-login.readthedocs.io/en/latest/", ["built with", "Flask-Login"]) }}
-          {{ link_pill("https://marcoagner.github.io/Flask-QRcode/", ["built with", "Flask-QRCode"]) }}
-          {{ link_pill("https://github.com/mebjas/html5-qrcode", ["built with", "HTML5-QRCode"]) }}
-          {{ link_pill("https://jquery.com/", ["built with", "JQuery 3.5.1"]) }}
-          {{ link_pill("https://jenil.github.io/chota/", ["built with", "Chota CSS"]) }}
-        </p>
-        {% endblock %}
-        <p>
-          <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
-        </p>
+    </header>
+    {% endblock %}
         
+    {% block main %}
+    <main>  
+      <div class="container">
+      Template error... no rewriting of block 'main'
       </div>
-    </div>
-    <script>
-      $('.main').css('padding-top', $('.fixed-top').height());
-      $('.is-full-screen').css('margin-bottom', -$('.footer').height());
-    </script>
+    </main>
+    {% endblock %}
 
+    {% block footer %}
+    <footer>
+      <div class="container">
+        <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
+      </div>
+    </footer>
+    {% endblock %}
+        
+  </body>
+
+  <script>
+    $('main').css('margin-top', $('header').height()).css('margin-bottom', $('footer').height());
+  </script>  
 
   </body>
 </html>

@@ -1,125 +1,118 @@
 {% extends "base.j2.html" %}
-{% block main_content %}
-
-<div class='main'>
+{% block main %}
+<main>  
   <div class="container">
 
-  <section>
-    <h2>Editing</h2>
-    <p><small> ID: {{loc.id}}</small></p>
-
-    <form method="post">
-
-    <fieldset style="margin: 1rem 0;">
-      <legend>Location Information</legend>
-      <p style="margin: 1rem 0;">
-        <label for="description-input">Description</label>
-        <input id="description-input" name="description-input" type="text" placeholder="Description of location" value="{% if loc.description != "" %}{{loc.description}}{% endif %}" />
-        <small>Examples: <i>I.T. Equipment, Toys, Books</i></small>
-      </p>      
-      <p style="margin: 1rem 0;">
-        <label for="location-input">Where</label>
-        <input id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
-        <small>Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></small>
-      </p>
-      <p style="margin: 1rem 0;">
-        <label for="type-input">Type</label>
-        <input id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
-        <small>Examples: <i>Box-Cardboard-Moving-104L, Box-Plastic-Clear-32L, Box-Plastic-Tough, Safe-Fireproof, Shelf-Henry</i></small>
-      </p>
-      <p style="margin: 1rem 0;">
-        <label for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
-        <input id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="10" max="100" />
-      </p>
-    </fieldset>
-
-    <fieldset style="margin: 1rem 0;">
-      <legend>Stored Items</legend>
-      <div id="item-list" style="margin: 1rem 0;">
-      {% for item in loc['items'] | sort %}
-        <div style="margin: 0.5rem 0;">
-          <span class="item">
-            <span class="text">{{item}}</span>
-            <a href="#" onclick="remove(this); return false;">✖</a>
-          </span>
-        </div>
-      {% endfor %}  
-      </div>      
-      
-      <div style="margin: 1.5rem 0;">
-        <p style="margin: 0.5rem 0;">
-        <input type="text" name="add-item-input" id="add-item-input" placeholder="New item description">
-        </p>
-        <p style="margin: 0.5rem 0;">
-          <button type="button" id="add-item-button" class="button primary">Add</button>
-        </p>   
-      </div>
-
-    </fieldset>
-    <div style="margin: 1.5em 0;">
-      <div class="row">
-        <div class="col is-vertical-align disable-small-100">
-          <button type="submit" class="my-3 button primary">Save</button>
-          <button type="button" class="button cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button>
-        </div>
-        <div class="col is-right is-vertical-align disable-small-100">
-          <button id="delete-button" type="button" class="button outline error">Delete</button>
-        </div>
-      </div>
-      
-    </div>
-    
-  </form>
-</section>
+    <section>
+      <h2>Editing Location</h2>
+      <p><small> ID: {{loc.id}}</small></p>  
   
-  </div>    
-</div>
+      <form method="post">
+  
+      <fieldset style="margin: 1rem 0;">
+        <legend>Location Information</legend>
+        <p style="margin: 1rem 0;">
+          <label for="description-input">Description</label>
+          <input id="description-input" name="description-input" type="text" placeholder="Description of location" value="{% if loc.description != "" %}{{loc.description}}{% endif %}" />
+          <small>Examples: <i>I.T. Equipment, Toys, Books</i></small>
+        </p>      
+        <p style="margin: 1rem 0;">
+          <label for="location-input">Where</label>
+          <input id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
+          <small>Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></small>
+        </p>
+        <p style="margin: 1rem 0;">
+          <label for="type-input">Type</label>
+          <input id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
+          <small>Examples: <i>Box-Cardboard-Moving-104L, Box-Plastic-Clear-32L, Box-Plastic-Tough, Safe-Fireproof, Shelf-Henry</i></small>
+        </p>
+        <p style="margin: 1rem 0;">
+          <label for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
+          <input id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="10" max="100" />
+        </p>
+      </fieldset>
+      
+      <fieldset style="margin: 1rem 0;">
+        <legend>Stored Items</legend>
+        <div id="item-list">
+          {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a href="#" onclick="remove(this); return false;">✖</a></span></div>{% endfor %}  
+        </div>      
+        
+        <div class="top-margin-15">
+          <p>
+          <input class="bottom-margin-05" type="text" name="add-item-input" id="add-item-input" placeholder="New item description">
+          <button type="button" id="add-item-button" class="button primary">Add</button>
+          </p>   
+        </div>
+  
+      </fieldset>
+      
+      <fieldset class="bottom-padding-15">
+        <legend>{{loc['items'] | length}} Stored Item{% if loc['items'] | length != 1 %}s{%endif%}</legend>
+        
+        {% if loc['items'] | length %}
+        {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}  
+        {% else %}
+        <p>No items yet. <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> to add some!</p>
+        {% endif %}    
+      </fieldset>
 
-  <script>
-    function remove(el) {
-      var element = el;
-      element.parentNode.parentNode.remove();
-    }      
+      <p><button type="submit" class="is-full-width button primary">Save</button></p>
+      <p><button type="button" class="is-full-width button cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button></p>
+      <p><br/><button id="delete-button" type="button" class="is-full-width button outline error">Delete</button></p>
+      
+      </form>
+
+    </section>
     
-    $("#add-item-button").click(function(){
-      if ($("#add-item-input").val() != ""){
-        $("#item-list").append('<div style="margin: 1rem 0;"><span class="item"><span class="text">' + $("#add-item-input").val() + '</span><a style="margin-left: 1rem;" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>')
-        $("#add-item-input").val("")
-        $("#add-item-input").focus();
-      }                
-    });
-    $("#add-item-input").keyup(function(event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        $("#add-item-button").click();
-      }
-    });
-              
-    function make_item_list(){
-      lst = [];
-      $(".item > .text").each(function(){ lst.push($(this).text()); });
-      return lst;
-    }      
+  </div>    
+</main>  
 
-    $("form").bind("keypress", function (e) {
-      if (e.keyCode == 13) {
-        return false;
-      }
-    });
+<script>
+  function remove(el) {
+    var element = el;
+    element.parentNode.parentNode.remove();
+  }      
+  
+  $("#add-item-button").click(function(){
+    if ($("#add-item-input").val() != ""){
+      $("#item-list").append('<div style="margin: 1rem 0;"><span class="item"><span class="text">' + $("#add-item-input").val() + '</span><a style="margin-left: 1rem;" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>')
+      $("#add-item-input").val("")
+      $("#add-item-input").focus();
+    }                
+  });
+  $("#add-item-input").keyup(function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      $("#add-item-button").click();
+    }
+  });
+            
+  function make_item_list(){
+    lst = [];
+    $(".item > .text").each(function(){ lst.push($(this).text()); });
+    return lst;
+  }      
 
-    $("form").submit( function(ev){
-      console.log(make_item_list())
-      $("<input />").val(JSON.stringify(make_item_list())).attr({"type": "hidden", "name": "items-list", "id": "items-list"}).appendTo("form")
-    })
+  $("form").bind("keypress", function (e) {
+    if (e.keyCode == 13) {
+      return false;
+    }
+  });
 
-    $("#delete-button").click(function(){
-      if ($(this).text() == "Confirm Deletion?"){ location.href='{{url_for('delete', url_id=loc.id)}}' }
-      if ($(this).text() == "Delete"){ $(this).text("Confirm Deletion?"); setTimeout(function(){ $('#delete-button').text("Delete");}, 2000) }      
-    })
+  $("form").submit( function(ev){
+    console.log(make_item_list())
+    $("<input />").val(JSON.stringify(make_item_list())).attr({"type": "hidden", "name": "items-list", "id": "items-list"}).appendTo("form")
+  })
 
-    $("#fullness-input").change(function(){
-      $("#fullness-numeric").text($(this).val());
-    })
+  $("#delete-button").click(function(){
+    if ($(this).text() == "Confirm Deletion?"){ location.href='{{url_for('delete', url_id=loc.id)}}' }
+    if ($(this).text() == "Delete"){ $(this).text("Confirm Deletion?"); setTimeout(function(){ $('#delete-button').text("Delete");}, 2000) }      
+  })
 
-  </script>
+  $("#fullness-input").change(function(){
+    $("#fullness-numeric").text($(this).val());
+  })
+
+</script>
 {% endblock %}

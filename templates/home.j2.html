@@ -1,109 +1,110 @@
 {% extends "base.j2.html" %}
-{% block main_content %}
-<div class='main'>
+{% block main %}
+<main>  
   <div class="container">
-  <section class="hide-not-on-phone">
-    <h2>View Location by QR</h2>  
-    <div id="qr-reader" style="width: 100%"></div>
-    <button id="scanning-control" type="button" class="button primary is-full-width">Start Camera</button>
-    <script>
-      const html5QrCode = new Html5Qrcode("qr-reader");
-      const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-        if (decodedText.startsWith("{{SITE.BASE_URL}}{{SITE.PATH_PREFIX}}")) { window.location = decodedText }
-      };
-      const config = { fps: 5, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] };
-      $('#scanning-control').click(function(){
-        if ($(this).text()=="Start Camera"){
-          html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-          $(this).text("Stop Camera")
-        } else {
-          html5QrCode.stop().then((ignore) => {
-            $(this).text("Start Camera")
-          }).catch((err) => { // Stop failed, handle it.
-          });
-        }
-      })
-    </script>
-  </section>
-  
-  <section>
-    <h2>Search for an Item by Name</h2>
-    <form id="search" method="post">
-      <div class="row responsive-search-form">
-        <div class="col-12 col-6-md col-7-lg">
-          <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query...">
+
+
+    <section><!--  class="hide-not-on-phone"> -->
+      <h3>Find a Location with QR</h3>  
+      <div id="qr-reader" class="is-full-width"></div>
+      <button id="scanning-control" type="button" class="button primary is-full-width">Start Camera</button>
+      <script>
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+          if (decodedText.startsWith("{{SITE.BASE_URL}}{{SITE.PATH_PREFIX}}")) { window.location = decodedText }
+        };
+        const config = { fps: 5, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] };
+        $('#scanning-control').click(function(){
+          if ($(this).text()=="Start Camera"){
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+            $(this).text("Stop Camera")
+          } else {
+            html5QrCode.stop().then((ignore) => {
+              $(this).text("Start Camera")
+            }).catch((err) => { // Stop failed, handle it.
+            });
+          }
+        })
+      </script>
+    </section>
+
+    <section>
+      <h3>Text Search for Item/Location</h3>
+      <form id="search" method="post">
+        <div class="row">
+          <div class="col-12 col-6-md col-7-lg">
+            <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query...">
+          </div>
+          <div class="col-6 col-4-md col-3-lg">
+            <select class="is-full-width" id="search-mode-select" name="search-mode-select">
+              <option value="any">Keywords - Match ANY</option>
+              <option value="all">Keywords - Match ALL</option>
+              <option value="re">Regular Expression</option>
+            </select>
+          </div>
+          <div class="col-6 col-2-md">
+            <button type="submit" class="button primary is-full-width">Search</button>
+          </div>
         </div>
-        <div class="col-6 col-4-md col-3-lg">
-          <select class="is-full-width" id="search-mode-select" name="search-mode-select">
-            <option value="any">Keywords - Match ANY</option>
-            <option value="all">Keywords - Match ALL</option>
-            <option value="re">Regular Expression</option>
-          </select>
+      </form>
+    </section>
+
+    <section>
+      <div class="row">
+        <div class="col disable-small-reduction">
+          <h3>Location List</h3>
         </div>
-        <div class="col-6 col-2-md">
-          <button type="submit" class="button primary is-full-width">Search</button>
+        <div class="col is-right disable-small-reduction">
+          <span><a href="{{url_for('cycle_sort')}}">Sorted by: {{sorted_str}}</a></span>
         </div>
       </div>
-    </form>
-  </section>
+      
+      {% if locs | length %}
+      {% for loc in locs %}  
 
-  <section>
-    <div class="row">
-      <div class="col disable-small-100">
-        <h2>Location List</h2>
-      </div>
-      <div class="col is-right disable-small-100">
-        <span><a href="{{url_for('cycle_sort')}}">Sorted by: {{sorted_str}}</a></span>
-      </div>
-    </div>
-    
-    {% if locs | length %}
-    {% for loc in locs %}  
+        <fieldset>
+          <legend>{{loc.id}}</legend>
+          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
+          <p class="bottom-margin-05">
+            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
+            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+            <br />
+            <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
+            {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
+            {{loc.fullness}}% Used</span>
+            <br />
+            <button class="button primary is-full-width" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
+            {% if sorted_str == "Last Updated" %}<br /><small class="text-light">Last Updated: {{loc.last_change}}</small>{% endif %}
+          </p>          
+        </fieldset>
 
-      <fieldset style="margin: 1rem 0;">
-        <legend>{{loc.id}}</legend>
-        <h3>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h3>
-        <p style="margin: 0; font-weight: 500;">
-          {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
-          {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
-        </p>
-        <p style="margin: 0;">
-          <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
-          {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
-          {{loc.fullness}}% Used</span>
-        </p>
-        {% if sorted_str == "Last Updated" %}<p style="margin: 0;"><small>Last Updated: {{loc.last_change}}</small></p>{% endif %}
-        <p style="margin: 1.0rem 0;">
-          <button class="button primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
-        </p>          
-      </fieldset>
-
-    {% endfor %}
-    {% else %}
-    <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
-    {% endif %}
-  </section>
-
-  <section>
-    <h2>New Location</h2>  
-    <button class="button primary" onclick="location.href='{{url_for('create')}}'">Create New Location</button>
-  </section>
+      {% endfor %}
+      {% else %}
+      <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
+      {% endif %}
+    </section>
+   
+    <section>
+      <h3>Setup New Location</h3>  
+      <button class="button primary is-full-width" onclick="location.href='{{url_for('create')}}'">Create New Location</button>
+    </section>
 
     {% if username != "" %}
-    <p>
-      Logged in as <strong>{{username}}</strong>.     
-      <button id="logout-button" class="button outline error" style=" margin-left: 2em;">Logout</button>
+    <section>
+      
+      <h3>User</h3> 
+      <p class="top-margin-05 bottom-margin-05">Currently logged in as <strong>{{username}}</strong>.</p>
+      <p><button class="button primary is-full-width" disabled>User Settings</button></p>
+      <p><button id="logout-button" class="button outline error is-full-width">Logout</button></p>
       <script>
         $("#logout-button").click(function(){
           if ($(this).text() == "Confirm Logout?"){ location.href='{{url_for('logout')}}' }
           if ($(this).text() == "Logout"){ $(this).text("Confirm Logout?"); setTimeout(function(){ $('#logout-button').text("Logout");}, 2000) }      
         })
       </script>
-    </p>
-    {% endif %}
-  
+    </section>
 
-  
-</div>
-</div>
+    {% endif %}
+    
+</main>
 {% endblock %}

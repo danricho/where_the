@@ -1,32 +1,71 @@
 {% extends "base.j2.html" %}
-{% block header_content %}{% endblock %}
-{% block main_content %}
-<div class="container thin text-center">
-  <div class="hero is-full-screen">
-      <div class="login is-center is-vertical-align">        
-        <h2 class="">Welcome</h2>
-        <form action="" method="post">            
-          <fieldset>
-            <legend>Login</legend>
-            <p>
-              <input type="text" class="form-control" placeholder="username" required="required" name="username">
-            </p>
-            <p>
-              <input type="password" class="form-control" placeholder="password" required="required" name="password">
-            </p>
-            <p>
-              <button type="submit" class="button primary">Log in</button>
-            </p>
-          </fieldset>
-        </form>
-      </div>
+{% block main %}
+<style>
+
+  #flex_centerer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #centered {
+    display: inline-box;
+    margin: 5px;
+    text-align: center;
+    /* border: 1px solid #333; */
+    padding: 1em;
+  }
+  /* Login bage styles */
+  .thin {
+    max-width: 350px;
+  }
+  .form-group {
+    margin: 0.35em 0 0.7em;
+  }
+</style>
+<div id="flex_centerer">
+  <div id="centered">
+    <div class="thin">
+      <h2 class="">Welcome</h2>
+      <form action="" method="post">            
+        <fieldset>
+          <legend>Login</legend>
+          <p>
+            <input type="text" class="form-control" placeholder="username" required="required" name="username">
+          </p>
+          <p>
+            <input type="password" class="form-control" placeholder="password" required="required" name="password">
+          </p>
+          <p>
+            <button type="submit" class="button primary">Log in</button>
+          </p>
+        </fieldset>
+      </form>   
+    </div>
+    <div class="thin" style="margin: 3em 0;">
+      <p>
+        {{ link_pill("https://danricho.com", ["built by", "danricho"]) }}
+        {{ link_pill("https://en.wikipedia.org/wiki/2022", ["built in", "2022"]) }}
+        {{ link_pill("https://choosealicense.com/licenses/gpl-3.0/", ["released under", "GNU GPLv3"]) }}
+        {{ link_pill("https://github.com/danricho/where_the", ["source available on", "GitHub"]) }}
+      </p>
+      <p>
+        {{ link_pill("https://www.python.org/", ["built with", "Python 3"]) }}
+        {{ link_pill("https://flask.palletsprojects.com/", ["built with", "Flask"]) }}
+        {{ link_pill("https://flask-login.readthedocs.io/en/latest/", ["built with", "Flask-Login"]) }}
+        {{ link_pill("https://marcoagner.github.io/Flask-QRcode/", ["built with", "Flask-QRCode"]) }}
+        {{ link_pill("https://github.com/mebjas/html5-qrcode", ["built with", "HTML5-QRCode"]) }}
+        {{ link_pill("https://jquery.com/", ["built with", "JQuery 3.5.1"]) }}
+        {{ link_pill("https://jenil.github.io/chota/", ["built with", "Chota CSS"]) }}
+      </p>      
+    </div> 
+    <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small> 
   </div>
 </div>
-
 <script>
   $(document).prop('title', $(document).prop('title') + " - Login");  
 </script>
-
 {% endblock %}
-
-{% block footer_pills %}{% endblock %}
+{% block footer %}{% endblock %}

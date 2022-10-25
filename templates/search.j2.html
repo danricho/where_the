@@ -1,65 +1,51 @@
 {% extends "base.j2.html" %}
-{% block main_content %}
-<div class='main'>
-<div class="container">
+{% block main %}
+<main>  
+  <div class="container">
 
-  <section>
-    <button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button>
-  </section>
-
-  <section>
-    <h2>Search for an Item</h2>
-    <form id="search" method="post">
-      <div class="row responsive-search-form">
-        <div class="col-12 col-6-md col-7-lg">
-          <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query..." value="{{form_data['search-input']}}">
-        </div>
-        <div class="col-6 col-4-md col-3-lg">
-          <select class="is-full-width" id="search-mode-select" name="search-mode-select">
-            <option value="any"{% if form_data['search-mode-select'] == "any" %} selected{% endif %}>Keywords - Match ANY</option>
-            <option value="all"{% if form_data['search-mode-select'] == "all" %} selected{% endif %}>Keywords - Match ALL</option>
-            <option value="re"{% if form_data['search-mode-select'] == "re" %} selected{% endif %}>Regular Expression</option>
-          </select>
-        </div>
-        <div class="col-6 col-2-md">
-          <button type="submit" class="button primary is-full-width">Search</button>
-        </div>
-      </div>
-    </form>
-  
-  </section>
-
-
-  <section>
-    <div class="row">
-      <div class="col is-vertical-align disable-small-100">
-        <h2>{{results.results|length}} Result{% if results.results|length != 1 %}s{% endif %}</h2>
-      </div>
-    </div>
-    
-    {% for loc in results.results %}  
-      <fieldset style="margin: 1rem 0;">
-        <legend>{{loc.id}}</legend>
-        <h3>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.location != "" %} | {{loc.location}}{% endif %}</h3>
-        <div id="item-list" style="margin: 0;">
-        <div style="margin: 0.5rem 0;"><strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}{% if loc['items'] | length > 0 %}:{%endif%}</strong></div>
-        {% for item in loc['items'] | sort %}
-          <div style="margin: 0.5rem 0;">
-            <span class="item">
-              <span class="text">{{item}}</span>
-            </span>
+    <section>
+      <h3 class="bottom-margin-05">Text Search for Item/Location</h3>
+      <form id="search" method="post">
+        <div class="row">
+          <div class="col-12 col-6-md col-7-lg">
+            <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query..." value="{{form_data['search-input']}}">
           </div>
-        {% endfor %} 
-        <p style="margin: 1.5rem 0;">
-          <button class="button primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View Location</button>
-        </p>  
-      </fieldset>  
+          <div class="col-6 col-4-md col-3-lg">
+            <select class="is-full-width" id="search-mode-select" name="search-mode-select">
+              <option value="any"{% if form_data['search-mode-select'] == "any" %} selected{% endif %}>Keywords - Match ANY</option>
+              <option value="all"{% if form_data['search-mode-select'] == "all" %} selected{% endif %}>Keywords - Match ALL</option>
+              <option value="re"{% if form_data['search-mode-select'] == "re" %} selected{% endif %}>Regular Expression</option>
+            </select>
+          </div>
+          <div class="col-6 col-2-md">
+            <button type="submit" class="button primary is-full-width">Search</button>
+          </div>
+        </div>
+      </form>
 
-    {% endfor %}
+      <h3 class="top-margin-15">{{results.results|length}} Result{% if results.results|length != 1 %}s{% endif %}</h3>
+      
+      {% for loc in results.results %}  
+        <fieldset>
+          <legend>{{loc.id}}</legend>
+          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
+          <p>
+            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
+            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+          </p>
+            <strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}{% if loc['items'] | length > 0 %}:{%endif%}</strong>
+            {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}  
+            <button class="button primary is-full-width top-margin-05" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
+          </p>          
+        </fieldset>
+
+      {% endfor %}
+      
+    </section>
+
+    <p><br/><button class="button primary is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
+
+
     
-  </section>
-  
-</div>
-</div>
-
+</main>
 {% endblock %}
