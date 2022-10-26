@@ -4,7 +4,8 @@ Last updated: 2022-10-26
 
 **2022-10-26**
 
- - LATEST!: *Add configuration option for including location description under QR code.*
+ - LATEST!: *Smart "Back" buttons for location view page... allows return to search page when came from there.*
+ - 8f4d74c: *Add configuration option for including location description under QR code.*
  - 1cdd701: *Print traceback for unhandled exceptions on error page.*
 
 **2022-10-25**

@@ -345,12 +345,13 @@ def scanned(url_id):
 # view a location page
 @app.route(config['SITE']['PATH_PREFIX'] + '/view/<string:url_id>')
 @login_required
-def view(url_id):
+def view(url_id):  
   global locs
   load_json()
+  from_search = config['SITE']['PATH_PREFIX'] + '/search' in request.referrer
   if url_id.upper() in locs:
     locs[url_id.upper()]['last_change'] = datetime.fromtimestamp(locs[url_id.upper()]['last_change']).strftime("%-I:%M %p, %d %B %Y")
-    return render_template('view.j2.html', loc=locs[url_id.upper()])
+    return render_template('view.j2.html', loc=locs[url_id.upper()], from_search=from_search)
   else:
     raise locationIdNotFound()
 
