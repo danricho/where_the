@@ -1,10 +1,15 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-10-25
+Last updated: 2022-10-26
+
+**2022-10-26**
+
+ - LATEST!: *Add configuration option for including location description under QR code.*
+ - 1cdd701: *Print traceback for unhandled exceptions on error page.*
 
 **2022-10-25**
 
- - LATEST!: *Add changelog.md*
+ - aeb2b99: *Add changelog.md*
  - 412c45a: *Turned homepage into menu and moved content to subpages.*
  - 0a03db3: *Fix the Edit page and minor CSS tweak (mistakes earlier)*
  - a2b3284: *Added config option to disable to QR code centre logo*

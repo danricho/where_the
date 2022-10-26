@@ -34,6 +34,7 @@ load_config()
 # done this way for backward compatibility of config.yml and to create defaults
 config['PRIMARY-COLOR'] = config.get('PRIMARY-COLOR', '#C0A890') 
 config['DISABLE-QR-LOGO'] = config.get('DISABLE-QR-LOGO', False)
+config['ADD-DESCRIPTION-TO-QR'] = config.get('ADD-DESCRIPTION-TO-QR', False)
 save_config()
 
 ############################################################
@@ -256,7 +257,7 @@ def logout():
 def home():
   global locs
   load_json()    
-  
+
   username = ""
   load_config()
   for id in config['USERS']:
@@ -455,7 +456,8 @@ def inject_data():
   return {
     'git_revision': git_revision,
     'PRIMARY_COLOR': config['PRIMARY-COLOR'],
-    'DISABLE_QR_LOGO': config['DISABLE-QR-LOGO'],    
+    'DISABLE_QR_LOGO': config['DISABLE-QR-LOGO'],      
+    'ADD_DESCRIPTION_TO_QR': config['ADD-DESCRIPTION-TO-QR'],    
   }
 
 

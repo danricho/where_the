@@ -112,15 +112,22 @@ div.meter > div {
 /* printing QR code styles */
 .to-print { text-align: center; }
 .to-print > div { display: inline-block; width: 4cm; border: solid 1px #aaa; padding: 0cm 0.2cm; margin: 0.2cm 0; }
-.ident {
-  padding: 0.1cm;
-  font-size: 1.5em;
+.ident, .description {
+  padding: 0.1cm;  
   text-align: center;
-  text-transform: capitalize;
-  font-weight: bold;
   color: #FFF;
   background-color: var(--color-primary) !important;
+}
+.ident { 
+  font-size: 1.5em;
+  font-weight: bold; 
+  letter-spacing: 0.2em;
+  text-transform: capitalize; 
   margin: 0.2cm 0;
+}
+.description {
+  font-size: 0.8em;
+  margin-bottom: 0.2cm;
 }
 
 /* print styles */

@@ -17,6 +17,9 @@
       {% else %}
       <img src="{{ qrcode(SITE.BASE_URL + SITE.PATH_PREFIX + '/scan/' + loc.id, error_correction='H', box_size=12, border=0, icon_img='logo.png') }}">
       {% endif %}
+      {% if ADD_DESCRIPTION_TO_QR %}
+      <div class="description">{{loc.description}}</div>
+      {% endif %}      
     </div>
     <!-- TODO: ADD LAYOUT OPTIONS AND BATCH PRINTING -->
     </section>

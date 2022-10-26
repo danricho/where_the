@@ -79,8 +79,9 @@ A simple Python Flask web application which helps keep track of your stored item
 ## Configuration (config.yml)
 
 ```yaml
-PRIMARY-COLOR: '#C0A890'
-DISABLE-QR-LOGO: false
+PRIMARY-COLOR: '#C0A890' # The main color. This default is based on a carboard box color :)
+DISABLE-QR-LOGO: false # Removes the logo in the centre of the QR code.
+ADD-DESCRIPTION-TO-QR: false # When using this, be aware of description length.
 
 FLASK: # These are Flask configuration settings
   HOST: 0.0.0.0
