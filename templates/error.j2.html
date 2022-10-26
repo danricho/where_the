@@ -27,11 +27,11 @@
 </style>
 <div id="flex_centerer">
   <div id="centered">
-    <div class="thin">
+    <div class="">
       <h2 class="">{{error.name}}</h2>      
       <fieldset>
         <legend>ERROR: {{error.code}}</legend>
-        <p>{{error.description}}</p>          
+        <p>{{error.description | safe}}</p>          
         <p><button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button></p>      
       </fieldset>  
     </div>    

@@ -1,3 +1,4 @@
+from fcntl import F_ADD_SEALS
 import json, yaml, random
 import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
@@ -5,6 +6,7 @@ from datetime import datetime, date
 from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
+import traceback, sys
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 git_revision = {
@@ -413,8 +415,9 @@ def send_static(path):
     return send_from_directory('static', path)
 
 # error page generator - comment decortaor to see errors in terminal
-# @app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_error(e):
+
   error_info = {}
   try:
     error_info['code'] = e.code
@@ -428,6 +431,22 @@ def handle_error(e):
     error_info['description'] = e.description
   except:
     pass  
+  
+  if error_info == {}:
+    etype, value, tb = sys.exc_info()
+    try:
+      error_info['code'] = etype.__name__
+    except:
+      pass
+    try:
+      error_info['name'] = value
+    except:
+      pass
+    try:
+      error_info['description'] = traceback.format_exc().replace('\n', '<br/>')
+    except:
+      pass  
+  
   return render_template('error.j2.html', error=error_info)
 
 # DATA PROVIDED TO ALL TEMPLATES
