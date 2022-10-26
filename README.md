@@ -31,17 +31,7 @@ A simple Python Flask web application which helps keep track of your stored item
 
 **Does anyone know a quick way to generate this type of demo image?**
 
-### Home Page
-
-<img src="static/screenshots/home-page.png"/>
-
-*Note that QR scanning is available on mobile phones / tablets only - due to my design decision for simplicity.*
-
-### Viewing a Location
-
-<img src="static/screenshots/view-page.png"/>
-
-**Update and more pages coming soon**
+See [this page](static/screenshots/screenshots.md) for example screenshots.
 
 ## Installation - Native Python
 
