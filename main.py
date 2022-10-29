@@ -31,10 +31,16 @@ def save_config():
 config = {}
 load_config()
 
-# done this way for backward compatibility of config.yml and to create defaults
-config['PRIMARY-COLOR'] = config.get('PRIMARY-COLOR', '#C0A890') 
-config['DISABLE-QR-LOGO'] = config.get('DISABLE-QR-LOGO', False)
-config['ADD-DESCRIPTION-TO-QR'] = config.get('ADD-DESCRIPTION-TO-QR', False)
+# THIS SECTION IS TO UPDATE PREVIOUS VERSIONS OF CONFIG.YML
+config['PRIMARY-COLOR'] = config.get('PRIMARY-COLOR', '#C0A890')
+config['PRINT_TEMPLATE'] = config.get('PRINT_TEMPLATE', {'ADD_DESCRIPTION_TO_LABEL': True, 'ADD_LOGO_TO_QR': True, 'DESCRIPTION_FONT_SIZE': '0.35cm', 'IDENTIFIER': 'AVERY L7164', 'ID_FONT_SIZE': '0.8cm', 'LABEL': {'HEIGHT': '7.2cm', 'WIDTH': '6.353cm', 'X_GUTTER': '0.25cm', 'X_PADDING': '0.25cm', 'Y_GUTTER': '0cm', 'Y_PADDING': '0.1cm'}, 'LABELS_PER_PAGE': 12, 'PAGE': {'WIDTH': '21cm', 'X_MARGIN': '0.7214cm', 'Y_MARGIN': '0.457cm'}, 'QR_HEIGHT': '4.3cm'})
+if config.get('DISABLE-QR-LOGO', None) != None: # moving into PRINT_TEMPLATE
+  config['PRINT_TEMPLATE']['ADD_LOGO_TO_QR'] = not config.get('DISABLE-QR-LOGO')
+  del(config['DISABLE-QR-LOGO'])
+if config.get('ADD-DESCRIPTION-TO-QR', None) != None: # moving into PRINT_TEMPLATE
+  config['PRINT_TEMPLATE']['ADD-DESCRIPTION-TO-LABEL'] = config.get('ADD-DESCRIPTION-TO-QR')
+  del(config['ADD-DESCRIPTION-TO-QR'])
+
 save_config()
 
 ############################################################
@@ -255,15 +261,12 @@ def logout():
 @app.route(config['SITE']['PATH_PREFIX'] + '/')
 @login_required
 def home():
-  global locs
   load_json()    
-
-  username = ""
   load_config()
+  username = ""
   for id in config['USERS']:
     if hasattr(current_user, 'username'):
-      username = current_user.username
-  
+      username = current_user.username  
   return render_template('home.j2.html', SITE=config['SITE'], username=username)
   
 sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
@@ -271,7 +274,6 @@ sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type"
 @app.route(config['SITE']['PATH_PREFIX'] + '/list')
 @login_required
 def list_locs():
-  global locs
   load_json()    
 
   sorting = 0 # default sort to location
@@ -335,7 +337,6 @@ def cycle_sort():
 @app.route(config['SITE']['PATH_PREFIX'] + '/scan/<string:url_id>')
 @login_required
 def scanned(url_id):
-  global locs
   load_json()
   if url_id.upper() in locs:
     return redirect(url_for("view", url_id=url_id)) 
@@ -346,7 +347,6 @@ def scanned(url_id):
 @app.route(config['SITE']['PATH_PREFIX'] + '/view/<string:url_id>')
 @login_required
 def view(url_id):  
-  global locs
   load_json()
   from_search = config['SITE']['PATH_PREFIX'] + '/search' in request.referrer
   if url_id.upper() in locs:
@@ -359,12 +359,20 @@ def view(url_id):
 @app.route(config['SITE']['PATH_PREFIX'] + '/print/<string:url_id>')
 @login_required
 def print_qr(url_id):
-  global locs
+  load_config()
   load_json()
   if url_id.upper() in locs:
-    return render_template('print.j2.html', loc=locs[url_id.upper()], SITE=config['SITE'])
+    return render_template('print.j2.html', locs=[locs[url_id.upper()]], SITE=config['SITE'], batch=False, template=config['PRINT_TEMPLATE'])
   else:
     raise locationIdNotFound()
+
+# print qr code for location page
+@app.route(config['SITE']['PATH_PREFIX'] + '/batch-print/')
+@login_required
+def print_batch():
+  load_config()
+  load_json()
+  return render_template('print.j2.html', locs=locs.values(), SITE=config['SITE'], batch=True, template=config['PRINT_TEMPLATE'])
 
 # edit location page (serve form and process submission)
 @app.route(config['SITE']['PATH_PREFIX'] + '/edit/<string:url_id>', methods=['GET', 'POST'])
@@ -456,9 +464,7 @@ def handle_error(e):
 def inject_data():    
   return {
     'git_revision': git_revision,
-    'PRIMARY_COLOR': config['PRIMARY-COLOR'],
-    'DISABLE_QR_LOGO': config['DISABLE-QR-LOGO'],      
-    'ADD_DESCRIPTION_TO_QR': config['ADD-DESCRIPTION-TO-QR'],    
+    'PRIMARY_COLOR': config['PRIMARY-COLOR'] 
   }
 
 

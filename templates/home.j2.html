@@ -44,6 +44,10 @@
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('create')}}'">Setup a New Location</button>
     </section>
 
+    <section>
+      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('print_batch')}}'">Print QR Labels (Multiple)</button>
+    </section>
+
     {% if username != "" %}
     <section>
       <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{username}}</strong>.</p>

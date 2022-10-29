@@ -4,7 +4,8 @@ Last updated: 2022-10-29
 
 **2022-10-29**
 
- - LATEST!: *Add update instructions to readme.md*
+ - LATEST!: *Add batch printing of labels and templating*
+ - 3a61888: *Add update instructions to readme.md*
  - 4b7506e: *Fix edit page bug (lose items on save).*
 
 **2022-10-26**

@@ -2,8 +2,6 @@
 <a class="pill" href="{{url}}" target="_blank">{%- for part in parts -%}<part>{{part}}</part>{%- endfor -%}</a>
 {%- endmacro -%}
 
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -64,9 +62,11 @@
         
   </body>
 
+  {% block height_script %}
   <script>
     $('main').css('margin-top', $('header').height()).css('margin-bottom', $('footer').height());
   </script>  
+  {% endblock %}
 
   </body>
 </html>

@@ -90,7 +90,7 @@ div.meter > div {
 
 /* stored 'item' and metadata */
 .item { margin: 0.25em 0; }
-.item > span{
+.item > span {
   display: inline-block;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
@@ -99,7 +99,9 @@ div.meter > div {
   -webkit-transition: all .2s ease;
   transition: all .2s ease;
 }
-.item span > a { margin-left: 0.5em; }
+.item span > a#remove { margin-left: 0.5em; }
+.item span > a#decr { margin-left: 0.5em; margin-right: 0.25em;  }
+.item span > a#incr { margin: 0 0.25em; }
 
 /* pills */
 .pill { display: inline-block; color: #fff; font-size: 0.7em; margin: 0.25em 0; }
@@ -108,31 +110,3 @@ div.meter > div {
 .pill > *:first-child { border-bottom-left-radius: 0.4em; border-top-left-radius: 0.4em; }
 .pill > *:last-child { border-bottom-right-radius: 0.4em; border-top-right-radius: 0.4em; }
 .pill > *:last-child { background-color: var(--color-primary); }
-
-/* printing QR code styles */
-.to-print { text-align: center; }
-.to-print > div { display: inline-block; width: 4cm; border: solid 1px #aaa; padding: 0cm 0.2cm; margin: 0.2cm 0; }
-.ident, .description {
-  padding: 0.1cm;  
-  text-align: center;
-  color: #FFF;
-  background-color: var(--color-primary) !important;
-}
-.ident { 
-  font-size: 1.5em;
-  font-weight: bold; 
-  letter-spacing: 0.2em;
-  text-transform: capitalize; 
-  margin: 0.2cm 0;
-}
-.description {
-  font-size: 0.8em;
-  margin-bottom: 0.2cm;
-}
-
-/* print styles */
-@media print {
-  header, footer, section:not(.to-print) { display: none; }
-  * { margin: 0; padding: 0; }
-  .to-print { text-align: unset; }
-}
