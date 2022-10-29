@@ -35,7 +35,7 @@
       <fieldset>
         <legend>Stored Items</legend>
         <div id="item-list">
-          {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a href="#" onclick="remove(this); return false;">✖</a></span></div>{% endfor %}  
+          {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a id="remove" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>{% endfor %}  
         </div>      
         
         <div class="top-margin-15">
@@ -65,8 +65,8 @@
   }      
   
   $("#add-item-button").click(function(){
-    if ($("#add-item-input").val() != ""){
-      $("#item-list").append('<div style="margin: 1rem 0;"><span class="item"><span class="text">' + $("#add-item-input").val() + '</span><a style="margin-left: 1rem;" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>')
+    if ($("#add-item-input").val() != ""){       
+      $("#item-list").append('<div class="item"><span>' + $("#add-item-input").val() + '<a id="remove" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>')
       $("#add-item-input").val("")
       $("#add-item-input").focus();
     }                
@@ -80,7 +80,7 @@
             
   function make_item_list(){
     lst = [];
-    $(".item > .text").each(function(){ lst.push($(this).text()); });
+    $(".item").each(function(){ lst.push($(this).text().replace('✖','')); });
     return lst;
   }      
 
