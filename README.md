@@ -66,6 +66,16 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
 
 1. To troubleshoot the container it may help to see it's logs: `docker logs where_the`
 
+## Updating to the latest GitHub version
+
+To update, all that shoule be needed is to run the command `git pull` in your Where The ?!? directory.
+
+If you get a message about local file changes which would be overwritten by merge, this means you have modified one of the tracked files. The config and data files (as made during installation) are not the files git is talking about. 
+
+The command `git diff` will tell you what is different about the files. Running `git reset --hard HEAD` will reset the uncommited file changes, but **NOTE THAT** you may lose work if you do this. Only do this if you understand what you are doing. And once your Repo is clean, the `git pull` whould work.
+
+There are many resources available online to learn more about Git operations.
+
 ## Configuration (config.yml)
 
 ```yaml
