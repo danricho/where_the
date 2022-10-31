@@ -1,4 +1,3 @@
-from fcntl import F_ADD_SEALS
 import json, yaml, random
 import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
@@ -348,7 +347,9 @@ def scanned(url_id):
 @login_required
 def view(url_id):  
   load_json()
-  from_search = config['SITE']['PATH_PREFIX'] + '/search' in request.referrer
+  from_search = False
+  if request.referrer:
+    from_search = config['SITE']['PATH_PREFIX'] + '/search' in request.referrer
   if url_id.upper() in locs:
     locs[url_id.upper()]['last_change'] = datetime.fromtimestamp(locs[url_id.upper()]['last_change']).strftime("%-I:%M %p, %d %B %Y")
     return render_template('view.j2.html', loc=locs[url_id.upper()], from_search=from_search)
@@ -466,7 +467,6 @@ def inject_data():
     'git_revision': git_revision,
     'PRIMARY_COLOR': config['PRIMARY-COLOR'] 
   }
-
 
 ############################################################
 #                  START THE FLASK APP!                    #
