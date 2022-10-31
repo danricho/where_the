@@ -55,7 +55,8 @@
     {% block footer %}
     <footer class="text-center">
       <div class="container">
-        <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
+        <small>Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
+        {{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}
       </div>
     </footer>
     {% endblock %}

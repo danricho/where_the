@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-10-29
+Last updated: 2022-10-31
+
+**2022-10-31**
+
+ - LATEST!: *Add Github pill back to the footer*
 
 **2022-10-29**
 
- - LATEST!: *Add batch printing of labels and templating*
+ - bde1f2a: *Add batch printing of labels and templating*
  - 3a61888: *Add update instructions to readme.md*
  - 4b7506e: *Fix edit page bug (lose items on save).*
 

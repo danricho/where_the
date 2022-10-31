@@ -110,3 +110,7 @@ div.meter > div {
 .pill > *:first-child { border-bottom-left-radius: 0.4em; border-top-left-radius: 0.4em; }
 .pill > *:last-child { border-bottom-right-radius: 0.4em; border-top-right-radius: 0.4em; }
 .pill > *:last-child { background-color: var(--color-primary); }
+
+footer > .container {opacity: 0.3;}
+footer > .container > .pill {margin: 1em 2em;}
+
