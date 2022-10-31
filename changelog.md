@@ -4,7 +4,8 @@ Last updated: 2022-10-31
 
 **2022-10-31**
 
- - LATEST!: *Bug fix when scanning QR outside website, there is likely no referrer.*
+ - LATEST!: *Add warning about testing template printing before use.*
+ - d2160d2: *Bug fix when scanning QR outside website, there is likely no referrer.*
  - 9dcd256: *Add Github pill back to the footer*
 
 **2022-10-29**
