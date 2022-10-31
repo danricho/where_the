@@ -4,7 +4,8 @@ Last updated: 2022-10-31
 
 **2022-10-31**
 
- - LATEST!: *Add warning about testing template printing before use.*
+ - LATEST!: *Embed logo SVG on home page to allow it to be color styled by config.yml*
+ - 963b793: *Add warning about testing template printing before use.*
  - d2160d2: *Bug fix when scanning QR outside website, there is likely no referrer.*
  - 9dcd256: *Add Github pill back to the footer*
 
