@@ -2,7 +2,7 @@ import json, yaml, random
 import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
 from datetime import datetime, date
-from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory
+from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory, session
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
 import traceback, sys
@@ -39,7 +39,8 @@ if config.get('DISABLE-QR-LOGO', None) != None: # moving into PRINT_TEMPLATE
 if config.get('ADD-DESCRIPTION-TO-QR', None) != None: # moving into PRINT_TEMPLATE
   config['PRINT_TEMPLATE']['ADD-DESCRIPTION-TO-LABEL'] = config.get('ADD-DESCRIPTION-TO-QR')
   del(config['ADD-DESCRIPTION-TO-QR'])
-
+if config['USERS'].get("default", None) == None:
+  config['USERS']["default"] = {}
 save_config()
 
 ############################################################
@@ -53,7 +54,7 @@ QRcode(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-app.config['LOGIN_DISABLED'] = config['FLASK']['LOGIN_DISABLED'] 
+app.config['LOGIN_DISABLED'] = (config['AUTHENTICATION'] not in ["FLASK-LOGIN", "AUTHELIA"])
 
 ############################################################
 #                    LOAD INITIAL DATA                     #
@@ -202,14 +203,18 @@ class locationIdNotFound(Exception):
 #               SET UP USER FOR FLASK-LOGIN                #
 ############################################################
 
+def props(x):
+    return dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
+
 class User(UserMixin):
-  def __init__(self, id, username, password):
-    self.id = id
+  def __init__(self, username, password, email=None):
     self.username = username
     self.password = password
+    self.email = email
+    self.id = username
 users = []
-for id in config['USERS']:
-  users.append(User(id, config['USERS'][id]['username'], config['USERS'][id]['password']))
+for username in config['USERS']:
+  users.append(User(username, config['USERS'][username].get('password', 'UNSET'), config['USERS'][username].get('email', None)))
 
 ############################################################
 #           DECORATED FUNCTIONS FOR FLASK-LOGIN            #
@@ -218,11 +223,40 @@ for id in config['USERS']:
 # Loads a user from the active session if it exists.
 # Without this you would have to keep logging in.
 @login_manager.user_loader
-def load_user(id):
-  id = int(id)
-  for user in users:
-    if user.id == id:
-      return user
+def load_user(username):
+
+  global config
+
+  if config['AUTHENTICATION'] == "FLASK-LOGIN":
+    for user in users:
+      if user.username == username.lower():
+        user.name = user.username
+        user.type = "FLASK-LOGIN"
+        return user
+ 
+  if config['AUTHENTICATION'] == "AUTHELIA":
+    try:
+      username = request.headers.get('Remote-User').lower()
+      email = request.headers.get('Remote-Email').lower()
+      name = request.headers.get('Remote-Name').lower()
+      for user in users:
+        if user.username == username.lower():
+          user.name = user.username
+          user.type = "AUTHELIA"
+          return user
+
+      # AUTHELIA USER WASN'T IN CONFIG... ADD
+      load_config()
+      config['USERS'][username] = {'password': 'AUTHELIA', 'email': email}
+      save_config()
+      users.append(User(username, 'AUTHELIA', email))
+      users[-1].name = name
+      users[-1].type = "AUTHELIA"
+      return users[-1]
+
+    except:      
+      return None
+
   return None # no user found!
 
 # Send un-logged-in users to the login page
@@ -232,19 +266,37 @@ def unauthorized():
 
 # Serve the login form or process the authorisation on login submission
 # TODO: Redirect to original page after login 
-# TODO: Remember user
 @app.route(config['SITE']['PATH_PREFIX'] + '/login', methods=['GET', 'POST'])
 def login():
-  if request.method == 'POST':
-    username = request.form.get('username', None)
-    password = request.form.get('password', None)
-    for user in users:
-      if username == user.username and password == user.password:
-        login_user(user)
-        return redirect(url_for("home"))
+
+  if config['AUTHENTICATION'] not in ["FLASK-LOGIN", "AUTHELIA"]:
+    return redirect(url_for("home"))
+
+  if config['AUTHENTICATION'] == "FLASK-LOGIN":
+    if request.method == 'POST':
+      username = request.form.get('username', None)
+      password = request.form.get('password', None)
+      for user in users:
+        if username.lower() == user.username.lower() and password == user.password:
+          user.type = "FLASK-LOGIN"
+          login_user(user)
+          return redirect(url_for("home"))
+      return abort(401)
+    else:
+      return render_template('login.j2.html')
+
+  if config['AUTHENTICATION'] == "AUTHELIA":
+    try:
+      username = request.headers.get('Remote-User').lower()
+      for user in users:
+        if user.username == username.lower():
+          user.name = user.username
+          user.type = "AUTHELIA"
+          login_user(user)
+          return redirect(url_for("home"))
+    except:
+      return abort(401)
     return abort(401)
-  else:
-    return render_template('login.j2.html')
 
 # URL to log out
 @app.route(config['SITE']['PATH_PREFIX'] + '/logout')
@@ -261,27 +313,29 @@ def logout():
 @login_required
 def home():
   load_json()    
-  load_config()
-  username = ""
-  for id in config['USERS']:
-    if hasattr(current_user, 'username'):
-      username = current_user.username  
-  return render_template('home.j2.html', SITE=config['SITE'], username=username)
+  load_config()  
+  return render_template('home.j2.html', SITE=config['SITE'])
   
 sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
 # list locations
 @app.route(config['SITE']['PATH_PREFIX'] + '/list')
 @login_required
 def list_locs():
-  load_json()    
+  load_json()   
+
+  # THIS IS FOR WHEN AUTH IS NO_AUTH.
+  if current_user.is_anonymous:
+     current_user.username = "DEFAULT"
 
   # SORTING
+  if config['AUTHENTICATION'] == "NO-AUTH":
+    username = "DEFAULT"
+
   sorting = 0 # default sort to location
   load_config()
-  for id in config['USERS']:
-    if hasattr(current_user, 'username'):
-      if current_user.username == config['USERS'][id]['username']:
-        sorting = config['USERS'][id].get("LOCATION_SORTING", 0)
+  for user in config['USERS']:
+    if current_user.username.lower() == user.lower():
+      sorting = config['USERS'][user].get("LOCATION_SORTING", 0)
 
   # print(list(locs.values())[0])
   if sort_descriptions[sorting] == "Location":    
@@ -305,10 +359,10 @@ def list_locs():
 
   # PAGINATION
   items_per_page = 10
-  for id in config['USERS']:
-    if hasattr(current_user, 'username'):
-      if current_user.username == config['USERS'][id]['username']:
-        items_per_page = config['USERS'][id].get("LOCATIONS_PER_PAGINATED_PAGE", 10)
+  for user in config['USERS']:
+    if current_user.username.lower() == user.lower():
+      items_per_page = config['USERS'][user].get("LOCATIONS_PER_PAGINATED_PAGE", 10)
+
   page = request.args.get('page', 1, type=int)
   pages = round(len(sorted_locs)/items_per_page + .499) 
   from_page = int(page) * items_per_page - items_per_page
@@ -336,34 +390,40 @@ def search():
 @app.route(config['SITE']['PATH_PREFIX'] + '/cycle/<string:setting>/<string:next_endpoint>')
 @login_required
 def cycle_setting(setting, next_endpoint):
+
   load_config()
   global config
-  for id in config['USERS']:
-    if current_user.username == config['USERS'][id]['username']:
+
+  # THIS IS FOR WHEN AUTH IS NO_AUTH.
+  if current_user.is_anonymous:
+     current_user.username = "DEFAULT"
+
+  for user in config['USERS']:
+    if current_user.username.lower() == user.lower():
       
       if setting == "sort":
-        if "LOCATION_SORTING" not in config['USERS'][id]:
-          config['USERS'][id]["LOCATION_SORTING"] = 1
+        if "LOCATION_SORTING" not in config['USERS'][user]:
+          config['USERS'][user]["LOCATION_SORTING"] = 1
         else:
-          config['USERS'][id]["LOCATION_SORTING"] += 1
-          if config['USERS'][id]["LOCATION_SORTING"] == len(sort_descriptions):
-            config['USERS'][id]["LOCATION_SORTING"] = 0
+          config['USERS'][user]["LOCATION_SORTING"] += 1
+          if config['USERS'][user]["LOCATION_SORTING"] == len(sort_descriptions):
+            config['USERS'][user]["LOCATION_SORTING"] = 0
         save_config()
 
       if setting == "per_page":
-        if "LOCATIONS_PER_PAGINATED_PAGE" not in config['USERS'][id]:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
+        if "LOCATIONS_PER_PAGINATED_PAGE" not in config['USERS'][user]:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
         
-        if config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 5:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
-        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 10:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 20
-        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 20:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 50
-        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 50:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 100
-        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 100:
-          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 5
+        if config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 5:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
+        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 10:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 20
+        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 20:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 50
+        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 50:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 100
+        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 100:
+          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 5
 
         save_config()
 
@@ -501,7 +561,9 @@ def handle_error(e):
 def inject_data():    
   return {
     'git_revision': git_revision,
-    'PRIMARY_COLOR': config['PRIMARY-COLOR'] 
+    'PRIMARY_COLOR': config['PRIMARY-COLOR'],
+    'request_info': request.headers,
+    'user' : props(current_user),
   }
 
 ############################################################

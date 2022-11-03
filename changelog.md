@@ -4,7 +4,8 @@ Last updated: 2022-11-03
 
 **2022-11-03**
 
- - LATEST!: *Added list pagination, cleaned up some CSS ahead of dark mode*
+ - LATEST!: *Updated authentication options to include NO_AUTH, FLASK-LOGIN and AUTHELIA and fix bug for NO_AUTH settings.*
+ - 8b4c81e: *Added list pagination, cleaned up some CSS ahead of dark mode*
 
 **2022-10-31**
 

@@ -75,11 +75,13 @@
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('print_batch')}}'">Print QR Labels (Multiple)</button>
     </section>
 
-    {% if username != "" %}
+    {% if user != {} %}
     <section>
-      <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{username}}</strong>.</p>
+      <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{user.username}}</strong><br/><small></small>(via {{user.type | lower}})</small></p>
       <p><button class="button primary outline is-full-width" disabled>User Settings</button></p>
+      {% if user.type != "AUTHELIA" %}
       <p><button id="logout-button" class="button outline error is-full-width">Logout</button></p>
+      {% endif %}
       <script>
         $("#logout-button").click(function(){
           if ($(this).text() == "Confirm Logout?"){ location.href='{{url_for('logout')}}' }
@@ -87,7 +89,6 @@
         })
       </script>
     </section>
-
     {% endif %}
     
 </main>

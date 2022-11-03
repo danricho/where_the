@@ -85,12 +85,12 @@ SITE:
   BASE_URL: http://localhost # THIS IS YOUR DOMAIN OR START OF YOUR URL - USED IN QR CODE
   PATH_PREFIX: / # THIS IS USEFUL IF YOU WANT A PREFIX ON THE URL PATH - USED IN QR CODE AND FLASK
 
-
 # THE MAIN COLOR. 
 # THE DEFAULT #C0A890 IS BASED ON A CARBOARD BOX COLOR :)
 # CAN BE ANY VALID CSS COLOR STRING - EG: rgb(128,128,128)
 PRIMARY-COLOR: '#C0A890' 
 
+#-------------------------------------
 
 # THESE ARE FLASK CONFIGURATION SETTINGS
 FLASK: 
@@ -100,21 +100,35 @@ FLASK:
   DEBUG: false
   TEMPLATES_AUTO_RELOAD: true
   USE_RELOADER: false
-  LOGIN_DISABLED: false # THIS ONE DISABLES AUTHENTICATION (LOGIN ACCESS CONTROL)
 
+#-------------------------------------
+# CAN BE ONE OF: 'NO-AUTH', 'FLASK-LOGIN', 'AUTHELIA' 
+AUTHENTICATION: FLASK-LOGIN 
 
-# USERS FOR FLASK-LOGIN
-# SETTINGS ARE STORED IN HERE ALSO BY THE APP.
-#    EG: IF YOU CHANGE YOUR SORTING OF THE LIST
+# NEXT, ADD ONE OF THE FOLLOWING TO MATCH
+
+# USERS FOR NO AUTHENTICATION (NO-AUTH)
+# THIS WILL STORE THE SETTINGS CHANGES (COMMON FOR EVERYONE)
+USERS: {}
+
+# SETTING UP USERS FOR FLASK-LOGIN AUTHENTICATION (FLASK-LOGIN)
 USERS: 
-  1:
-    username: user
+  user:
     password: pass
-  2:
-    username: user2
+  user2:
     password: pass
 
+# USERS FOR AUTHELIA AUTHENTICATION (AUTHELIA)
+# THIS WILL BE POPULATED FROM AUTHELIA AUTHENTICATION HEADERS
+USERS: {}
 
+# FOR INFORMATION:
+# AUTHELIA IS AN AUTHENTICATION MIDDLEWARE USEFUL WHEN USING TRAEFIK FOR ROUTING
+# 'WHERE THE ?!?' READS THE AUTHENTICATION HEADERS AUTHELIA PROVIDES ONCE LOGGED 
+# IN TO KEEP TRACK OF WHO IS LOGGED IN. ACCESS CONTROL IS HANDLED PRIOR TO
+# ACCESSING 'WHERE THE ?!?' WHEN USING AUTHELIA.
+
+#-------------------------------------
 PRINT_TEMPLATE:
 
   ADD_DESCRIPTION_TO_LABEL: true # WHEN USING THIS, BE AWARE OF DESCRIPTION LENGTH.
@@ -154,7 +168,6 @@ Please propose and discuss ideas [here](https://github.com/danricho/where_the/di
 My ideas so far (most would be choosen via a `config.yml` option):​
 - Add `Dark Mode` to Chota CSS, which is very easy (as per the Chota webpage) and a toggle for it in the fixed header
 - Add additional storage options other than raw JSON file  - [discussion](https://github.com/danricho/where_the/discussions/3)
-- Improve `Flask-Login` implementation - [discussion](https://github.com/danricho/where_the/discussions/5)
 - UI improvements - [discussion](https://github.com/danricho/where_the/discussions/9)
 - Code improvements - [discussion](https://github.com/danricho/where_the/discussions/7)
 
@@ -163,4 +176,3 @@ I welcome contributions to these with Pull requests!
 ## Change Log
 
 See [changelog](changelog.md) for a history of changes.
-
