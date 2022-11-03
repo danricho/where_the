@@ -11,8 +11,7 @@ header {
   left: 0;
   width: 100%;
   background-color: var(--color-primary);
-  color: #FFF;
-  border-bottom: 1px solid #FFF;
+  color: var(--font-color);
   font-size: 1.75em;
   z-index: 99;
   transition: all 1s;
@@ -22,8 +21,7 @@ footer {
   bottom: 0;
   left: 0;
   width: 100%;
-  border-top: 1px solid #FFF;
-  background-color: #FFF;
+  background-color: var(--bg-color);
   z-index: 99;
 }
 
@@ -55,10 +53,10 @@ h1, h2, h3, h4, h6 { margin: 0.25em 0; }
 button { font-weight: normal !important; }
 .button.outline { background-color: transparent; }
 .button.outline.error { border-color: var(--color-error); color: var(--color-error); }
-.button.outline.error:hover { background-color: var(--color-error); color: #fff; }
+.button.outline.error:hover { background-color: var(--color-error); color: var(--bg-color); }
 .button.outline { background-color: transparent; }
 .button.outline.primary { border-color: var(--color-primary); color: var(--color-primary); }
-.button.outline.primary:hover { background-color: var(--color-primary); color: #fff; }
+.button.outline.primary:hover { background-color: var(--color-primary); color: var(--bg-color); }
 
 /* meter */
 .meter-holder { 

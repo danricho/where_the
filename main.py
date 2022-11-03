@@ -275,6 +275,7 @@ sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type"
 def list_locs():
   load_json()    
 
+  # SORTING
   sorting = 0 # default sort to location
   load_config()
   for id in config['USERS']:
@@ -302,10 +303,25 @@ def list_locs():
     sorted_locs = list(sorted(locs.values(), key=lambda i: (i['type'])))
     # print([(i['last_change']) for i in sorted_locs])
 
+  # PAGINATION
+  items_per_page = 10
+  for id in config['USERS']:
+    if hasattr(current_user, 'username'):
+      if current_user.username == config['USERS'][id]['username']:
+        items_per_page = config['USERS'][id].get("LOCATIONS_PER_PAGINATED_PAGE", 10)
+  page = request.args.get('page', 1, type=int)
+  pages = round(len(sorted_locs)/items_per_page + .499) 
+  from_page = int(page) * items_per_page - items_per_page
+  upto_page = int(page) * items_per_page
+  upto_page = min(upto_page, len(sorted_locs))
+  pagination_info = { "pages": pages, "current_page": page, "first": from_page, "last": upto_page, "total": len(sorted_locs), "per_page": items_per_page }
+  sorted_locs = sorted_locs[from_page:upto_page]
+
+  # Friendlier Timestamps  
   for loc in sorted_locs:
     loc['last_change'] = datetime.fromtimestamp(loc['last_change']).strftime("%-I:%M %p, %d %B %Y")
 
-  return render_template('list.j2.html', locs=sorted_locs, sorted_str=sort_descriptions[sorting], SITE=config['SITE'])
+  return render_template('list.j2.html', locs=sorted_locs, sorted_str=sort_descriptions[sorting], SITE=config['SITE'], pagination=pagination_info )
 
 @app.route(config['SITE']['PATH_PREFIX'] + '/search', methods=['GET', 'POST'])
 @login_required
@@ -317,21 +333,41 @@ def search():
     submit_data = dict(request.form)
     return render_template('search.j2.html', form_data=submit_data, results=search_locs(submit_data['search-input'], mode=submit_data["search-mode-select"])) 
 
-@app.route(config['SITE']['PATH_PREFIX'] + '/cycle-sort')
+@app.route(config['SITE']['PATH_PREFIX'] + '/cycle/<string:setting>/<string:next_endpoint>')
 @login_required
-def cycle_sort():
+def cycle_setting(setting, next_endpoint):
   load_config()
   global config
   for id in config['USERS']:
     if current_user.username == config['USERS'][id]['username']:
-      if "LOCATION_SORTING" not in config['USERS'][id]:
-        config['USERS'][id]["LOCATION_SORTING"] = 1
-      else:
-        config['USERS'][id]["LOCATION_SORTING"] += 1
-        if config['USERS'][id]["LOCATION_SORTING"] == len(sort_descriptions):
-          config['USERS'][id]["LOCATION_SORTING"] = 0
-  save_config()
-  return redirect(url_for("list_locs")) 
+      
+      if setting == "sort":
+        if "LOCATION_SORTING" not in config['USERS'][id]:
+          config['USERS'][id]["LOCATION_SORTING"] = 1
+        else:
+          config['USERS'][id]["LOCATION_SORTING"] += 1
+          if config['USERS'][id]["LOCATION_SORTING"] == len(sort_descriptions):
+            config['USERS'][id]["LOCATION_SORTING"] = 0
+        save_config()
+
+      if setting == "per_page":
+        if "LOCATIONS_PER_PAGINATED_PAGE" not in config['USERS'][id]:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
+        
+        if config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 5:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
+        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 10:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 20
+        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 20:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 50
+        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 50:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 100
+        elif config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] == 100:
+          config['USERS'][id]["LOCATIONS_PER_PAGINATED_PAGE"] = 5
+
+        save_config()
+
+  return redirect(url_for(next_endpoint)) 
 
 @app.route(config['SITE']['PATH_PREFIX'] + '/scan/<string:url_id>')
 @login_required

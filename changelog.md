@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-10-31
+Last updated: 2022-11-03
+
+**2022-11-03**
+
+ - LATEST!: *Added list pagination, cleaned up some CSS ahead of dark mode*
 
 **2022-10-31**
 
- - LATEST!: *Embed logo SVG on home page to allow it to be color styled by config.yml*
+ - deb0382: *Embed logo SVG on home page to allow it to be color styled by config.yml*
  - 963b793: *Add warning about testing template printing before use.*
  - d2160d2: *Bug fix when scanning QR outside website, there is likely no referrer.*
  - 9dcd256: *Add Github pill back to the footer*

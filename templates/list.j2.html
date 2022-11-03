@@ -9,10 +9,10 @@
           <h3>Location List</h3>
         </div>
         <div class="col is-right disable-small-reduction">
-          <span><a href="{{url_for('cycle_sort')}}">Sorted by: {{sorted_str}}</a></span>
+          <span><a href="{{url_for('cycle_setting', setting='sort', next_endpoint='list_locs')}}">[Sorted by {{sorted_str}}]</a></span>
         </div>
       </div>
-      
+
       {% if locs | length %}
       {% for loc in locs %}  
 
@@ -33,9 +33,34 @@
         </fieldset>
 
       {% endfor %}
-      {% else %}
+      {% elif current_page == 1 %}
       <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
       {% endif %}
+
+
+      <div class="row">
+        <div class="col is-left disable-small-reduction">
+          {% if pagination.current_page != 1 %}
+            <button class="button primary outline" onclick="location.href='{{ url_for('list_locs', page=pagination.current_page - 1) }}'">Prev</button> 
+            <!-- <a class="btn btn-outline-info mb-4" href="{{ url_for('list_locs', page=pagination.current_page - 1) }}"><<</a> -->
+          {% endif %}
+        </div>
+        <div class="col is-center disable-small-reduction">
+          <div class="text-center"><span>Showing {{pagination.first+1}}-{{pagination.last}} of {{pagination.total}}</span><br/><a href="{{url_for('cycle_setting', setting='per_page', next_endpoint='list_locs')}}">[{{pagination.per_page}} per page]</a></div>
+          
+        </div>
+        <div class="col is-right disable-small-reduction">
+          {% if pagination.current_page != pagination.pages %}
+            <button class="button primary outline" onclick="location.href='{{ url_for('list_locs', page=pagination.current_page + 1) }}'">Next</button> 
+            <!-- <a class="btn btn-outline-info mb-4" href="{{ url_for('list_locs', page=pagination.current_page + 1) }}">>></a> -->
+          {% endif %}
+        </div>
+      </div>
+      <p>
+      
+        
+      
+      </p>
 
       <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
     </section>
