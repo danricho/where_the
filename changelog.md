@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-03
+Last updated: 2022-11-04
+
+**2022-11-04**
+
+ - LATEST!: *Homepage spacing adjustment*
 
 **2022-11-03**
 
- - LATEST!: *Updated authentication options to include NO_AUTH, FLASK-LOGIN and AUTHELIA and fix bug for NO_AUTH settings.*
+ - ac14116: *Updated authentication options to include NO_AUTH, FLASK-LOGIN and AUTHELIA and fix bug for NO_AUTH settings.*
  - 8b4c81e: *Added list pagination, cleaned up some CSS ahead of dark mode*
 
 **2022-10-31**

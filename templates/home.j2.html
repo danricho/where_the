@@ -34,7 +34,7 @@
       </svg>
     </section>
 
-    <section class="hide-not-on-phone">
+    <section class="hide-not-on-phone top-padding-05 bottom-padding-05">
       <div id="qr-reader" class="is-full-width"></div>
       <button id="scanning-control" type="button" class="button primary outline is-full-width">Scan QR Code</button>
       <script>
@@ -59,24 +59,24 @@
       </script>
     </section>
 
-    <section>
+    <section class="top-padding-05 bottom-padding-05">
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('search')}}'">Text Search for Items/Locations</button>
     </section>
 
-    <section>
+    <section class="top-padding-05 bottom-padding-05">
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('list_locs')}}'">List all Locations</button>
     </section>
    
-    <section>
+    <section class="top-padding-05 bottom-padding-05">
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('create')}}'">Setup a New Location</button>
     </section>
 
-    <section>
+    <section class="top-padding-05 bottom-padding-05">
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('print_batch')}}'">Print QR Labels (Multiple)</button>
     </section>
 
     {% if user != {} %}
-    <section>
+    <section class="top-padding-05 bottom-padding-05">
       <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{user.username}}</strong><br/><small></small>(via {{user.type | lower}})</small></p>
       <p><button class="button primary outline is-full-width" disabled>User Settings</button></p>
       {% if user.type != "AUTHELIA" %}
