@@ -288,15 +288,25 @@ def login():
   if config['AUTHENTICATION'] == "AUTHELIA":
     try:
       username = request.headers.get('Remote-User').lower()
+      email = request.headers.get('Remote-Email').lower()
+      name = request.headers.get('Remote-Name').lower()
       for user in users:
         if user.username == username.lower():
-          user.name = user.username
           user.type = "AUTHELIA"
-          login_user(user)
+          login_user(user)          
           return redirect(url_for("home"))
-    except:
+
+      # AUTHELIA USER WASN'T IN CONFIG... ADD
+      load_config()
+      config['USERS'][username] = {'password': 'AUTHELIA', 'email': email}
+      save_config()
+      users.append(User(username, 'AUTHELIA', email))
+      users[-1].name = name
+      users[-1].type = "AUTHELIA"
+      return redirect(url_for("home"))
+    except:      
       return abort(401)
-    return abort(401)
+  return abort(401)
 
 # URL to log out
 @app.route(config['SITE']['PATH_PREFIX'] + '/logout')

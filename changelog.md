@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-04
+Last updated: 2022-11-07
+
+**2022-11-07**
+
+ - LATEST!: *Bug fix for login with Authelia*
 
 **2022-11-04**
 
- - LATEST!: *Homepage spacing adjustment*
+ - 67c99df: *Homepage spacing adjustment*
 
 **2022-11-03**
 
