@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-07
+Last updated: 2022-11-09
+
+**2022-11-09**
+
+ - LATEST!: *Correct paths for site.webmanifest and browserconfig.xml*
 
 **2022-11-07**
 
- - LATEST!: *Bug fix for login with Authelia*
+ - ab1d1bd: *Bug fix for login with Authelia*
 
 **2022-11-04**
 

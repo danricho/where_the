@@ -529,7 +529,15 @@ def delete(url_id):
 # serve static files
 @app.route(config['SITE']['PATH_PREFIX'] + '/static/<path:path>')
 def send_static(path):
-    return send_from_directory('static', path)
+  if config['SITE']['PATH_PREFIX'] != "":
+    if path in ["icons/browserconfig.xml", "icons/site.webmanifest"]:
+      with open(base_path + f'/static/{path}', 'r') as f:
+        if path in ["icons/browserconfig.xml"]:
+          return Response(f.read().replace('"/static',f'"{config["SITE"]["PATH_PREFIX"]}/static'), mimetype='text/xml')
+        if path in ["icons/site.webmanifest"]:
+          return Response(f.read().replace('"/static',f'"{config["SITE"]["PATH_PREFIX"]}/static'), mimetype='application/manifest+json')
+  
+  return send_from_directory('static', path)
 
 # error page generator - comment decortaor to see errors in terminal
 @app.errorhandler(Exception)
