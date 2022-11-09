@@ -4,7 +4,8 @@ Last updated: 2022-11-09
 
 **2022-11-09**
 
- - LATEST!: *Correct paths for site.webmanifest and browserconfig.xml*
+ - LATEST!: *Adjust the color of id and description on labels for better readability*
+ - ffcee05: *Correct paths for site.webmanifest and browserconfig.xml*
 
 **2022-11-07**
 
