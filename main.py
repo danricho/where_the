@@ -327,7 +327,7 @@ def logout():
 def home():
   load_json()    
   load_config()  
-  return render_template('home.j2.html', SITE=config['SITE'])
+  return render_template('home.j2.html', SITE=config['SITE'], STATS={ "LOCS": len(locs.values()), "ITEMS": len(sum([loc['items'] for loc in locs.values()],[])) })
   
 sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
 # list locations

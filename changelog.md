@@ -4,7 +4,8 @@ Last updated: 2022-11-10
 
 **2022-11-10**
 
- - LATEST!: *Add configuration option to use colored background for text in label templates*
+ - LATEST!: *Add stored location/items count stats to home page*
+ - cfad234: *Add configuration option to use colored background for text in label templates*
 
 **2022-11-09**
 

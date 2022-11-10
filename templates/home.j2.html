@@ -64,7 +64,7 @@
     </section>
 
     <section class="top-padding-05 bottom-padding-05">
-      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('list_locs')}}'">List all Locations</button>
+      <button class="button primary outline is-full-width" onclick="location.href='{{url_for('list_locs')}}'">List all {{ STATS.LOCS }} Locations</button>
     </section>
    
     <section class="top-padding-05 bottom-padding-05">
@@ -73,6 +73,10 @@
 
     <section class="top-padding-05 bottom-padding-05">
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('print_batch')}}'">Print QR Labels (Multiple)</button>
+    </section>
+
+    <section class="top-padding-15 bottom-padding-05">
+      <p class="text-center top-padding-15"><em>{{ STATS.ITEMS }} items catalogued in {{ STATS.LOCS }} locations!</em></p>
     </section>
 
     {% if user != {} %}
