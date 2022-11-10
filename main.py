@@ -41,6 +41,9 @@ if config.get('ADD-DESCRIPTION-TO-QR', None) != None: # moving into PRINT_TEMPLA
   del(config['ADD-DESCRIPTION-TO-QR'])
 if config['USERS'].get("default", None) == None:
   config['USERS']["default"] = {}
+if config['PRINT_TEMPLATE'].get('COLORED_BACKGROUNDS', None) == None:
+  config['PRINT_TEMPLATE']['COLORED_BACKGROUNDS'] = True
+
 save_config()
 
 ############################################################

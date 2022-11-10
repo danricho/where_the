@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-09
+Last updated: 2022-11-10
+
+**2022-11-10**
+
+ - LATEST!: *Add configuration option to use colored background for text in label templates*
 
 **2022-11-09**
 
- - LATEST!: *Adjust the color of id and description on labels for better readability*
+ - fb95fa8: *Adjust the color of id and description on labels for better readability*
  - ffcee05: *Correct paths for site.webmanifest and browserconfig.xml*
 
 **2022-11-07**

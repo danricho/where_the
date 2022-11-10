@@ -51,7 +51,11 @@
   padding: 0cm;  
   text-align: center;
   color: #FFF;
+  {% if template.COLORED_BACKGROUNDS %}  
+  background-color: var(--color-primary) !important;
+  {% else %}
   background-color: #333333 !important;
+  {% endif %}
 }
 .ident { 
   font-size: var(--qr-font-id);
