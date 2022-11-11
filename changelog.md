@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-10
+Last updated: 2022-11-11
+
+**2022-11-11**
+
+ - LATEST!: *Enable Logout button on home when using Authelia (provide Authelia URL in config).*
 
 **2022-11-10**
 
- - LATEST!: *Add stored location/items count stats to home page*
+ - 50866b6: *Add stored location/items count stats to home page*
  - cfad234: *Add configuration option to use colored background for text in label templates*
 
 **2022-11-09**

@@ -85,6 +85,8 @@
       <p><button class="button primary outline is-full-width" disabled>User Settings</button></p>
       {% if user.type != "AUTHELIA" %}
       <p><button id="logout-button" class="button outline error is-full-width">Logout</button></p>
+      {% elif AUTHELIA_URL %}
+      <p><button class="button outline error is-full-width" onclick="location.href='{{AUTHELIA_URL}}/logout?rd=' + location.href">Logout</button></p>
       {% endif %}
       <script>
         $("#logout-button").click(function(){
