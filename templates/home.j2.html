@@ -34,6 +34,10 @@
       </svg>
     </section>
 
+    <section class="top-padding-05 bottom-padding-05">
+      <p class="text-center top-padding-15"><em>Currently <strong>{{ STATS.ITEMS }} items</strong> catalogued in <strong>{{ STATS.LOCS }} locations</strong> !</em></p>
+    </section>
+
     <section class="hide-not-on-phone top-padding-05 bottom-padding-05">
       <div id="qr-reader" class="is-full-width"></div>
       <button id="scanning-control" type="button" class="button primary outline is-full-width">Scan QR Code</button>
@@ -75,13 +79,9 @@
       <button class="button primary outline is-full-width" onclick="location.href='{{url_for('print_batch')}}'">Print QR Labels (Multiple)</button>
     </section>
 
-    <section class="top-padding-15 bottom-padding-05">
-      <p class="text-center top-padding-15"><em>{{ STATS.ITEMS }} items catalogued in {{ STATS.LOCS }} locations!</em></p>
-    </section>
-
     {% if user != {} %}
-    <section class="top-padding-05 bottom-padding-05">
-      <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong>{{user.username}}</strong><br/><small></small>(via {{user.type | lower}})</small></p>
+    <section class="top-padding-15 top-margin-30 bottom-padding-05 max-50-centered-lg">
+      <p class="top-margin-05 bottom-margin-05 text-center">Currently logged in as <strong title="(Authentication via {{user.type}})">{{user.username | upper}}</strong><br/></small></p>
       <p><button class="button primary outline is-full-width" disabled>User Settings</button></p>
       {% if user.type != "AUTHELIA" %}
       <p><button id="logout-button" class="button outline error is-full-width">Logout</button></p>

@@ -4,7 +4,8 @@ Last updated: 2022-11-11
 
 **2022-11-11**
 
- - LATEST!: *Enable Logout button on home when using Authelia (provide Authelia URL in config).*
+ - LATEST!: *Base Template, Homepage and CSS tweaks*
+ - 4e37af9: *Enable Logout button on home when using Authelia (provide Authelia URL in config).*
 
 **2022-11-10**
 
