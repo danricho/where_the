@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-11
+Last updated: 2022-11-12
+
+**2022-11-12**
+
+ - LATEST!: *Hide footer on print page*
 
 **2022-11-11**
 
- - LATEST!: *Base Template, Homepage and CSS tweaks*
+ - fd419b9: *Base Template, Homepage and CSS tweaks*
  - 4e37af9: *Enable Logout button on home when using Authelia (provide Authelia URL in config).*
 
 **2022-11-10**
