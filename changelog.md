@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-12
+Last updated: 2022-11-15
+
+**2022-11-15**
+
+ - LATEST!: *Add detail into Readme regarding docker image rebuild when updating and docker networking*
 
 **2022-11-12**
 
- - LATEST!: *Hide footer on print page*
+ - effad56: *Hide footer on print page*
 
 **2022-11-11**
 

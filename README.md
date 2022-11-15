@@ -66,6 +66,17 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
 
 1. To troubleshoot the container it may help to see it's logs: `docker logs where_the`
 
+**NOTE:**
+Networking settings are more complicated when using docker, so check the following:
+ - in `config.yml`:
+    - `FLASK.HOST` -  `0.0.0.0`
+    - `FLASK.PORT` - `5000`
+    - `SITE.BASE_URL` - usually host's IP or hostname
+- in `docker-compose.yml`:
+  - `services.web-app.ports` - `80:5000` - second number needs to match above, first is the port that docker will use. *Note: 80 may require special permission*.
+
+See the comments in [Issue #18](https://github.com/danricho/where_the/issues/18).
+
 ## Updating to the latest GitHub version
 
 To update, all that shoule be needed is to run the command `git pull` in your Where The ?!? directory.
@@ -75,6 +86,15 @@ If you get a message about local file changes which would be overwritten by merg
 The command `git diff` will tell you what is different about the files. Running `git reset --hard HEAD` will reset the uncommited file changes, but **NOTE THAT** you may lose work if you do this. Only do this if you understand what you are doing. And once your Repo is clean, the `git pull` whould work.
 
 There are many resources available online to learn more about Git operations.
+
+### Extra Update Step for Docker Users
+
+After updating, the docker image needs to be rebuilt as the app files (other than those mapped in `docker-compose.yml`) are cached inside the docker image. This automatically happens the first time you bring Where The ?!? up.
+
+This can be done by running docker-compose with a few extra commands: 
+`docker-compose up -d --force-recreate --build`
+
+This was the cause in [Issue #18](https://github.com/danricho/where_the/issues/18).
 
 ## Configuration (config.yml)
 
