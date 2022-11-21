@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-15
+Last updated: 2022-11-21
+
+**2022-11-21**
+
+ - LATEST!: *Improved the layout of the entire app; Moved from chota.css to spectre.css; Menu in off-canvas panel; primary color improvements*
 
 **2022-11-15**
 
- - LATEST!: *Add detail into Readme regarding docker image rebuild when updating and docker networking*
+ - a6e0e83: *Add detail into Readme regarding docker image rebuild when updating and docker networking*
 
 **2022-11-12**
 

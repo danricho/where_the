@@ -1,6 +1,6 @@
 {% extends "base.j2.html" %}
-{% block main %}
 
+{% block main %}
 <style>
 :root { 
 
@@ -28,8 +28,7 @@
   padding-left: var(--page-x-margin);
   font-size: 0px; 
   margin: 0 auto;  
-  border: solid 1px #DDD;
-  background-color: #EEE !important;
+  display: none;
 }
 
 .label{   
@@ -84,7 +83,6 @@
 
 /* print styles */
 @media print {
-  section:not(.to-print) { display: none; }
   * { margin: 0; padding: 0; }
   .to-print { text-align: unset; }
   .label{   
@@ -93,67 +91,61 @@
     background-color: #FFF !important;    
   }
   .page{   
-    border: none;
-    background-color: #FFF !important;
+    display: block;
   }
-  .footer, footer {
-    display: none;
+  .off-canvas {
+    display: none; 
   }
 }
 
 </style>
 
-<section>
-  <div class="container">
-
-    {% if not batch %}<p><button class="button primary is-full-width" onclick="location.href='{{url_for('view', url_id=locs[0].id)}}'">Finished Printing - Back to View</button></p>
-    {% else %}
-    <p><button class="button primary is-full-width" onclick="location.href='{{url_for('home')}}'">Finished Printing - Back to Home</button></p>
+{% if not batch %}<p><button class="btn btn-primary" onclick="location.href='{{url_for('view', url_id=locs[0].id)}}'">Finished Printing - Back to View</button></p>
+{% else %}
 
 
-    <fieldset>
-      <legend>Labels to Print</legend>
-      <div id="loc-list">
-        {% for loc in locs %}
-        <div class="item" data-target="{{loc.id}}"><span><strong class="id">{{loc.id}}</strong> | {{loc.description}} <a id="decr" href="#" onclick="decr(this); return false;">-</a><strong id="count">1</strong><a id="incr" href="#" onclick="incr(this); return false;">+</a></div>
-        {% endfor %}
-      </div>  
+<h4>Labels to Print</h4>
+<div id="loc-list">
+  {% for loc in locs %}
+  <div class="item" data-target="{{loc.id}}"><span><strong class="id">{{loc.id}}</strong> | {{loc.description}} <a id="decr" href="#" onclick="decr(this); return false;">-</a><strong id="count">1</strong><a id="incr" href="#" onclick="incr(this); return false;">+</a></div>
+  {% endfor %}
+</div>  
 
-      <p>
-        <label for="in">Blank Offset (used already)</label>
-        <input type="number" id="offset-input" min="0" max="11" value="0" step="1">
-      </p>
+<div class="form-group form-inline">
+  <label class="form-label" for="offset-input">Blank Offset (used already)</label>
+  <input type="number" class="form-input" id="offset-input" min="0" max="11" value="0" step="1">
+</div>
 
-    <script>
+<script>
 
-      function incr(el) {
-        current = parseInt($(el.parentNode.parentNode).find("#count").text());
-        current += 1;
-        $(el.parentNode.parentNode).find("#count").text(current)
-        syn_to_qr();
-      }      
-      function decr(el) {
-        current = parseInt($(el.parentNode.parentNode).find("#count").text());
-        if (current > 0 ){
-          current -= 1;
-          $(el.parentNode.parentNode).find("#count").text(current)
-          syn_to_qr();
-        }
-      }
+  function incr(el) {
+    current = parseInt($(el.parentNode.parentNode).find("#count").text());
+    current += 1;
+    $(el.parentNode.parentNode).find("#count").text(current)
+    syn_to_qr();
+  }      
+  function decr(el) {
+    current = parseInt($(el.parentNode.parentNode).find("#count").text());
+    if (current > 0 ){
+      current -= 1;
+      $(el.parentNode.parentNode).find("#count").text(current)
+      syn_to_qr();
+    }
+  }
 
 
-    </script>
+</script>
 
 {% endif %}
-    
-  <p class="text-center"><br /><strong>Always do a test print on normal paper.<br />When printing disable additional margins in the browser settings!</strong></p>
-  <p><button type="button" class="button primary is-full-width" onclick="print_qr();">Print</button></p>
+<div class="my-4">
+<p><strong>Always do a test print on normal paper.<br />When printing disable additional margins in the browser settings!</strong></p>
+</div>
+<p><button type="button" class="btn btn-primary" onclick="print_qr();">Preview / Print</button></p>
 
-  </div>
-</section>
+{% endblock %}
 
+{% block login_error_printpage %}
 <div class="page">
-
   {% for loc in locs %}
     <div id="{{loc.id}}" class="label">
       <div class="ident">{{loc.id}}</div>
@@ -169,16 +161,13 @@
       {% endif %}      
       
     </div>
-    {% if loop.index % template.LABELS_PER_PAGE == 0 %}</div><div class="page">{%endif%}
+    {% if loop.index % template.LABELS_PER_PAGE == 0 -%}
+  </div><div class="page">
+    {%- endif %}
   {% endfor %}
-
   <div id="blank" class="label" style="display: none;"></div>
  
 </div> 
-
-<script>
-  function print_qr(){ window.print(); } 
-</script>
 
 {% if batch %}
 <script>
@@ -186,6 +175,7 @@
 
   $(".page").removeClass('page').addClass('qr-source').hide();
   syn_to_qr();
+  
   function syn_to_qr(){
     $(".page").remove();
 
@@ -193,10 +183,12 @@
     page = $("<div />").attr("class", "page")
     page.appendTo("body");
 
-    for (var i = 0; i < parseInt($("#offset-input").val()); i++ ){     
-      console.log("test")  
+    for (var i = 0; i < parseInt($("#offset-input").val()); i++ ){ 
+      qr_i += 1     
+      console.log(qr_i) 
       page.append($(".qr-source #blank").clone().show())  
       if (qr_i == {{template.LABELS_PER_PAGE}}){ 
+        console.log("next-page")
         page = $("<div />").attr("class", "page")
         page.appendTo("body"); 
         qr_i = 0;
@@ -217,17 +209,9 @@
     })
   }
 
-  $("#offset-input").bind('keyup mouseup', function () {
-    console.log("change")
-    syn_to_qr();          
-  });
+
+  $("#offset-input").bind('keyup mouseup', function () { syn_to_qr(); });
 
 </script>
 {% endif %}
-{% endblock %}
-
-{% block height_script %}
-<script>
-  $("header, footer").hide();
-</script>
 {% endblock %}

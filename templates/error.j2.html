@@ -1,5 +1,5 @@
 {% extends "base.j2.html" %}
-{% block main %}
+{% block login_error_printpage %}
 <style>
 
   #flex_centerer {
@@ -31,8 +31,8 @@
       <h2 class="">{{error.name}}</h2>      
       <fieldset>
         <legend>ERROR: {{error.code}}</legend>
-        <p>{{error.description | safe}}</p>          
-        <p><button class="button primary" onclick="location.href='{{url_for('home')}}'">Back to Home</button></p>      
+        <pre>{{error.description | replace("<br/>", "\n")}}</pre>          
+        <p><button class="btn btn-primary" onclick="location.href='{{url_for('list_locs')}}'">Location List</button></p>      
       </fieldset>  
     </div>    
     <small class="">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small> 
@@ -40,6 +40,7 @@
 </div>
 <script>
   $(document).prop('title', $(document).prop('title') + " - Error {{error.code}}");
+  $(".off-canvas").hide();
 </script>
 {% endblock %}
 {% block footer %}{% endblock %}

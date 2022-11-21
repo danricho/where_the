@@ -1,62 +1,56 @@
 {% extends "base.j2.html" %}
 {% block main %}
-<main>  
-  <div class="container">
 
-    <section>
-      <h2>Editing Location</h2>
-      <p><small> ID: {{loc.id}}</small></p>  
-  
-      <form method="post">
-  
-      <fieldset>
-        <legend>Location Information</legend>
-        <p>
-          <label for="description-input">Description</label>
-          <input id="description-input" name="description-input" type="text" placeholder="Description of location" value="{% if loc.description != "" %}{{loc.description}}{% endif %}" />
-          <small>Examples: <i>I.T. Equipment, Toys, Books</i></small>
-        </p>      
-        <p>
-          <label for="location-input">Where</label>
-          <input id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
-          <small>Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></small>
-        </p>
-        <p>
-          <label for="type-input">Type</label>
-          <input id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
-          <small>Examples: <i>Box-Cardboard-Moving-104L, Box-Plastic-Clear-32L, Box-Plastic-Tough, Safe-Fireproof, Shelf-Henry</i></small>
-        </p>
-        <p>
-          <label for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
-          <input id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="10" max="100" />
-        </p>
-      </fieldset>
-      
-      <fieldset>
-        <legend>Stored Items</legend>
-        <div id="item-list">
-          {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a id="remove" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>{% endfor %}  
-        </div>      
-        
-        <div class="top-margin-15">
-          <p>
-          <input class="bottom-margin-05" type="text" name="add-item-input" id="add-item-input" placeholder="New item description">
-          <button type="button" id="add-item-button" class="button primary">Add</button>
-          </p>   
-        </div>
-  
-      </fieldset>    
+<h4>Edit Location</h4>
 
-      <p><button type="submit" class="is-full-width button primary">Save</button></p>
-      <p><button type="button" class="is-full-width button cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button></p>
-      <p><br/><button id="delete-button" type="button" class="is-full-width button outline error">Delete</button></p>
-      
-      </form>
+<div class="py-3">
+  <p>ID: {{loc.id}}</p>  
 
-    </section>
-    
-  </div>    
-</main>  
+  <form method="post">
+  <div class="form-group">
+    <label class="form-label" for="description-input">Description</label>
+    <input class="form-input" id="description-input" name="description-input" type="text" placeholder="Description of location" value="{% if loc.description != "" %}{{loc.description}}{% endif %}" />
+    <p class="form-input-hint">Examples: <i>I.T. Equipment, Toys, Books</i></p>
+  </div>           
+  <div class="form-group">
+    <label class="form-label" for="location-input">Where</label>
+    <input class="form-input" id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
+    <p class="form-input-hint">Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></p>
+  </div>      
+  <div class="form-group">
+    <label class="form-label" for="type-input">Type</label>
+    <input class="form-input" id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
+    <p class="form-input-hint">Examples: <i>Box-Cardboard-Moving-104L, Box-Plastic-Clear-32L, Box-Plastic-Tough, Safe-Fireproof, Shelf-Henry</i></p>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
+    <input class="" id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="1" max="100" />
+  </div>
+  <div class="pt-3">
+    <h4 class="mt-5">Stored Items</h4>
+    <div id="item-list">
+      {% for item in loc['items'] | sort %}<div class="item"><span>{{item}} <a id="remove" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>{% endfor %}        
+    </div>              
+    <div class="my-3 pb-5">
+      <div class="input-group">
+        <input type="text" class="form-input" name="add-item-input" id="add-item-input" placeholder="New item description">
+        <button class="btn btn-primary input-group-btn" id="add-item-button">Add Item</button>
+      </div> 
+    </div>              
+  </div> 
+
+  <div class="columns pt-5">
+    <div class="column" id="not-delete-buttons">
+      <button type="submit" class="btn btn-primary primary">Save</button>
+      <button type="button" class="btn cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button>
+    </div>
+    <div class="column col-auto">  
+      <button id="delete-button" type="button" class="btn btn-error">Delete</button>
+    </div>
+  </div>
+
+  </form>
+</div>  
 
 <script>
   function remove(el) {
@@ -64,7 +58,8 @@
     element.parentNode.parentNode.remove();
   }      
   
-  $("#add-item-button").click(function(){
+  $("#add-item-button").click(function(event){
+    event.preventDefault();
     if ($("#add-item-input").val() != ""){       
       $("#item-list").append('<div class="item"><span>' + $("#add-item-input").val() + '<a id="remove" href="#" onclick="remove(this); return false;">&#10006;</a></span></div>')
       $("#add-item-input").val("")
@@ -97,7 +92,14 @@
 
   $("#delete-button").click(function(){
     if ($(this).text() == "Confirm Deletion?"){ location.href='{{url_for('delete', url_id=loc.id)}}' }
-    if ($(this).text() == "Delete"){ $(this).text("Confirm Deletion?"); setTimeout(function(){ $('#delete-button').text("Delete");}, 2000) }      
+    if ($(this).text() == "Delete"){ 
+      $("#not-delete-buttons button").hide();
+      $(this).text("Confirm Deletion?"); 
+      setTimeout(function(){ 
+        $('#delete-button').text("Delete");       
+        $("#not-delete-buttons button").show();
+      }, 2000) 
+    }      
   })
 
   $("#fullness-input").change(function(){

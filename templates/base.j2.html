@@ -3,8 +3,16 @@
 {%- endmacro -%}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title>Where The ?!?</title> 
+    <meta charset="utf-8">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <meta name="description" content="Where The ?!? is a simple Python Flask web application which helps keep track of your stored items.">
+    <meta name="author" content="danricho">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('send_static', path='icons/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('send_static', path='icons/favicon-32x32.png') }}">
@@ -15,67 +23,199 @@
     <meta name="msapplication-TileColor" content="#c0a890">
     <meta name="msapplication-config" content="{{ url_for('send_static', path='icons/browserconfig.xml') }}">
     <meta name="theme-color" content="#c0a890">
-
-    <!-- EXISTING -->
-    <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge' >
-    <title>Where The ?!?</title>    
-    <link rel="stylesheet" href="{{url_for('send_static', path='chota.0.7.2.min.css')}}">
-    <link rel="stylesheet" href="{{url_for('send_static', path='styles.css')}}">
-
-    <style>
-      /* Configurable styles */
-      :root { --color-primary: {{PRIMARY_COLOR}} !important; }     
-    </style>
+    
+    <link rel="stylesheet" href="{{url_for('send_static', path='spectre-modified.css')}}">
+    <link rel="stylesheet" href="{{url_for('send_static', path='spectre-exp.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('send_static', path='spectre-icons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('send_static', path='layout.css')}}">
 
     <script src="{{url_for('send_static', path='jquery.3.5.1.min.js')}}"></script>
     <script src="{{url_for('send_static', path='html5-qrcode.min.js')}}"></script>
-  </head>  
+  
+    <style>
 
-  <!-- TODO: DARK MODE -->  
+      /* Configurable styles */
+      :root { 
+        --color-primary: rgba({{PRIMARY_COLOR_RGB.r}}, {{PRIMARY_COLOR_RGB.g}}, {{PRIMARY_COLOR_RGB.b}}, 1.0) !important;  
+        --color-hover: rgba({{PRIMARY_COLOR_RGB.r}}, {{PRIMARY_COLOR_RGB.g}}, {{PRIMARY_COLOR_RGB.b}}, 0.8) !important;  
+        --color-secondary: rgba({{PRIMARY_COLOR_RGB.r}}, {{PRIMARY_COLOR_RGB.g}}, {{PRIMARY_COLOR_RGB.b}}, 0.4) !important; 
+        --color-shaddow: rgba({{PRIMARY_COLOR_RGB.r}}, {{PRIMARY_COLOR_RGB.g}}, {{PRIMARY_COLOR_RGB.b}}, 0.1) !important; 
+      }     
+
+      #logo { color: var(--color-primary); }
+      input[type=range] { width: 100%; }
+      .pagination { justify-content: center; }
+      .columns.title-sort { align-items: center; }
+      .menu .divider { border-top: 0.05rem solid #dbdbdb; }
+      p { margin-bottom: 0.5rem;}
+
+      /* pills */
+      .pill { display: inline-block; color: #fff !important; font-size: 0.7em; margin: 0.25em 0; }
+      .pill > * { padding: 0.25em 0.7em; background-color: #a0a0a0; white-space: nowrap;}     
+      .pill > *:not(:last-child) { margin-right: 1px; }
+      .pill > *:first-child { border-bottom-left-radius: 0.4em; border-top-left-radius: 0.4em; }
+      .pill > *:last-child { border-bottom-right-radius: 0.4em; border-top-right-radius: 0.4em; }
+      .pill > *:last-child { background-color: var(--color-primary); }
+
+      /* meter */
+      .meter-holder { 
+        width: 100%;
+        display: inline-block;
+        padding-top: 1.6em; 
+      }
+      div.meter{ 
+        background-color: #e0e0e0;
+        width: 100%; 
+        border-style: none;
+        height: 5px; 
+        border-radius: 2px; 
+        display: block;
+        position: relative;    
+      }
+      div.meter::before {
+        position: absolute; 
+        top: calc(-5px - 1.6em); 
+        content: attr(data-before);  
+      }
+
+      div.meter > div {
+        background-color: var(--color-primary); 
+        height: 5px; 
+        border-bottom-left-radius: 2px;
+        border-top-left-radius: 2px;         
+      }
+
+      /* stored 'item' and metadata */
+      .item { margin: 0.25em 0; }
+      .item > span {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #d4d4d4;
+        font-size: 1em;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+      }
+      .item span > a#remove { margin-left: 0.5em; }
+      .item span > a#decr { margin-left: 0.5em; margin-right: 0.25em;  }
+      .item span > a#incr { margin: 0 0.25em; }
+
+      /* device specific styles */
+      @media (not(hover: hover)) and (not(pointer: fine)) {
+        .hide-on-phone { display: none; }
+      }
+      @media (hover: hover) and (pointer: fine) {
+        .hide-not-on-phone { display: none; }
+      }
+
+    </style>
+
+  </head>
   <body>
+    <div class="modal" id="scan-modal">
+      <a href="#close" class="modal-overlay" aria-label="Close"></a>
+      <div class="modal-container">
+        <div class="modal-header">
+          <a href="#close" class="btn btn-clear float-right" aria-label="Close" onclick="stop_scan();"></a>
+          <div class="modal-title h5">Scan QR Code</div>
+        </div>
+        <div class="modal-body">
+          <div class="content">
+            <div id="qr-reader" class="is-full-width"></div>
+            <div class="text-center pt-2"><button class="btn btn-primary" onclick="stop_scan();">Cancel Scan</button></div>        
+            <script>
+              const html5QrCode = new Html5Qrcode("qr-reader");
+              const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                if (decodedText.startsWith("{{SITE.BASE_URL}}{{SITE.PATH_PREFIX}}")) { window.location = decodedText }
+              };
+              const config = { fps: 5, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] };
+              function start_scan(){
+                $("#scan-modal").addClass("active");
+                  html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);            
+                  $("#logo").hide();
+              }
+              function stop_scan(){
+                html5QrCode.stop().then((ignore) => {
+                    $("#logo").show();
+                  }).catch((err) => {  });
+                $("#scan-modal").removeClass("active");
+              }
+            </script>
 
-    {% block header %}
-    <header>
-      <div class="container">
-        <a style="color: #FFF;" href="{{url_for('home')}}">Where The ?!?</a>
+          </div>
+        </div>
+        <div class="modal-footer"></div>
       </div>
-    </header>
-    {% endblock %}  
-
-    {% block main %}
-    <main>  
-      <div class="container">
-      Template error... no rewriting of block 'main'
+    </div>
+    <div class="vh100 off-canvas off-canvas-sidebar-show">
+      <div class="top-panel">
+        <a class="btn btn-link btn-action" id="sidebar-toggle"><i class="icon icon-menu"></i></a>
       </div>
-    </main>
-    {% endblock %}      
+      <div class="off-canvas-sidebar" id="nav-panel">
+        <div class="text-center c-hand" id="logo" onclick="location.href='{{ url_for('home') }}'">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128; max-width: 150px;" xml:space="preserve">
+            <circle style="fill:currentColor;" cx="64" cy="64" r="61"/>        
+            <g>
+              <path style="fill:#FFFFFF;" d="M38.7,78.3c-0.6,0-1.1-0.2-1.5-0.6c-0.3-0.4-0.5-1-0.5-1.7c0-1.7,0.2-3.4,0.6-4.9 c0.4-1.5,1.1-3,2-4.6c1-1.6,2.2-3.3,3.7-5.1c1.2-1.5,2.3-2.8,2.9-3.9c0.8-1.1,1.3-2.3,1.6-3.3S48,52,48,51c0-2.1-0.8-3.7-2.3-4.9 s-3.6-1.8-6.2-1.8c-2.3,0-4.3,0.3-6.2,1c-1.9,0.7-3.7,1.6-5.6,3c-0.8,0.5-1.4,0.8-2,0.8s-1.1-0.2-1.5-0.5s-0.7-0.8-0.8-1.3 c-0.1-0.5-0.1-1.1,0.3-1.7c0.3-0.6,0.8-1.1,1.5-1.6c1.9-1.6,4.2-2.8,6.9-3.6c2.6-0.9,5.3-1.3,7.9-1.3c2.8,0,5.3,0.5,7.5,1.5 s3.8,2.3,5,4.1c1.2,1.7,1.7,3.8,1.7,6.2c0,1.6-0.3,3-0.7,4.4s-1.1,2.9-2.1,4.3c-1,1.5-2.3,3-4.1,4.9c-1.6,1.6-2.8,3-3.7,4.4 c-1,1.4-1.6,2.7-2.1,3.9c-0.4,1.3-0.8,2.6-1,4c-0.1,0.6-0.3,1-0.6,1.5C39.8,78.2,39.3,78.3,38.7,78.3z M38.7,92 c-1.2,0-2.3-0.3-3-1.1c-0.8-0.8-1.1-1.7-1.1-2.9c0-1.2,0.3-2.2,1.1-2.9c0.8-0.8,1.7-1.1,3-1.1c1.2,0,2.2,0.3,2.9,1.1 c0.7,0.8,1,1.7,1,2.9c0,1.2-0.3,2.2-1,2.9C40.9,91.6,39.9,92,38.7,92z"/>
+              <path style="fill:#FFFFFF;" d="M64.5,92c-1.2,0-2.3-0.3-2.9-1.1c-0.8-0.8-1.1-1.7-1.1-2.9c0-1.2,0.3-2.2,1.1-2.9 c0.8-0.8,1.7-1.1,2.9-1.1c1.2,0,2.2,0.3,2.9,1.1c0.7,0.8,1,1.7,1,2.9c0,1.2-0.3,2.2-1,2.9C66.8,91.6,65.8,92,64.5,92z M64.5,78.4 c-0.6,0-1-0.2-1.5-0.6c-0.3-0.4-0.6-1-0.6-1.7L61,42.9c-0.1-1.2,0.3-2.2,0.9-2.9c0.6-0.7,1.5-1,2.7-1c1.1,0,2,0.3,2.6,1 s0.9,1.6,0.8,2.9L66.5,76c0,0.8-0.2,1.4-0.5,1.7C65.6,78.2,65.1,78.4,64.5,78.4z"/>
+              <path style="fill:#FFFFFF;" d="M87.8,78.3c-0.6,0-1.1-0.2-1.5-0.6c-0.3-0.4-0.5-1-0.5-1.7c0-1.7,0.2-3.4,0.6-4.9s1.1-3,2-4.6 c1-1.6,2.2-3.3,3.7-5.1c1.2-1.5,2.3-2.8,2.9-3.9c0.8-1.1,1.3-2.3,1.6-3.3c0.3-1,0.5-2.2,0.5-3.2c0-2.1-0.8-3.7-2.3-4.9 s-3.6-1.8-6.2-1.8c-2.3,0-4.3,0.3-6.2,1c-1.9,0.7-3.7,1.6-5.6,3c-0.8,0.5-1.4,0.8-2,0.8s-1.1-0.2-1.5-0.5s-0.7-0.8-0.8-1.3 c-0.1-0.5-0.1-1.1,0.3-1.7c0.3-0.6,0.8-1.1,1.5-1.6c1.9-1.6,4.2-2.8,6.9-3.6c2.6-0.9,5.3-1.3,7.9-1.3c2.8,0,5.3,0.5,7.5,1.5 s3.8,2.3,5,4.1c1.2,1.7,1.7,3.8,1.7,6.2c0,1.6-0.3,3-0.7,4.4c-0.4,1.4-1.1,2.9-2.1,4.3c-1,1.5-2.3,3-4.1,4.9 c-1.6,1.6-2.8,3-3.7,4.4c-1,1.4-1.6,2.7-2.1,3.9c-0.4,1.3-0.8,2.6-1,4c-0.1,0.6-0.3,1-0.6,1.5C88.8,78.2,88.4,78.3,87.8,78.3z M87.7,92c-1.2,0-2.3-0.3-3-1.1c-0.8-0.8-1.1-1.7-1.1-2.9c0-1.2,0.3-2.2,1.1-2.9c0.8-0.8,1.7-1.1,3-1.1c1.2,0,2.2,0.3,2.9,1.1 c0.7,0.8,1,1.7,1,2.9c0,1.2-0.3,2.2-1,2.9C90,91.6,89,92,87.7,92z"/>
+            </g>
+          </svg>
+          <h4>Where The ?!?</h4>          
+        </div>
+        <div class="p-2">
+          <ul class="menu menu-nav">
+            <li class="menu-item"><a href="{{ url_for('list_locs') }}">Location List</a></li>
+            <li class="menu-item hide-not-on-phone"><a href="#" class="c-hand" onclick="start_scan();">Scan QR Code</a></li>
+            <li class="menu-item"><a href="{{ url_for('search') }}">Text Search</a></li>
+            <div class="divider text-center" data-content=""></div>
+            <li class="menu-item"><a href="{{ url_for('create') }}">Create a Location</a></li>
+            <li class="menu-item"><a href="{{ url_for('print_batch') }}">Print Labels</a></li>
+            <div class="divider text-center" data-content=""></div>
+            <li class="menu-item my-2"><span class="tooltip" data-tooltip="Authenticated via&#10;{{user.type}}"><i class="icon icon-people mr-3"></i>{{user.username | capitalize }}</span></li>
+            <li class="menu-item">User Settings *</li>
+            <li class="menu-item"><a id="logout-link" class="c-hand">Logout</a></li> 
+            <script>
+              $("#logout-link").click(function(){
+                if ($(this).text() == "Confirm Logout?"){                   
+                  {% if user.type != "AUTHELIA" %}
+                  location.href='{{url_for('logout')}}' 
+                  {% elif AUTHELIA_URL %}
+                  location.href='{{AUTHELIA_URL}}/logout?rd=' + location.href
+                  {% endif %}
+                }
+                if ($(this).text() == "Logout"){ $(this).text("Confirm Logout?"); setTimeout(function(){ $('#logout-link').text("Logout");}, 2000) }      
+              })
+            </script>
+            <div class="divider text-center" data-content=""></div>    
+            <li class="menu-item"><small>You have <strong>{{ STATS.ITEMS }}</strong> items catalogued in <strong>{{ STATS.LOCS }}</strong> locations.</small></li>
+            <div class="divider text-center" data-content=""></div>       
+            
 
-    <div class="footer text-center top-margin-30">
-      <div class="container">
-        <small>Git Revision: <span title="{{git_revision.timestamp}} : {{git_revision.subject}}">{{git_revision.hash}} </span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
-        {{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}
+            <li style="padding: 0.5rem 0.4rem; opacity:0.60;">
+              <small class="tooltip" data-tooltip="{{git_revision.timestamp}}{% if git_revision.modified %}&#10;(MODIFIED){% endif %}">
+              Version: {{git_revision.hash}}{%- if git_revision.modified %}*{% endif %}</small><br />
+              {{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}
+            </li>            
+          </ul>     
+        </div>
+      </div><a class="off-canvas-overlay"></a>
+
+      <div class="main-panel off-canvas-content"> 
+        
+        {% block main %}{% endblock %}
+    
+        <div class="mt-5 pt-5 text-center">
+          <div class="my-2">
+            <button class="btn btn-sm" onclick="location.href='{{url_for('list_locs')}}'">Location List</button>
+          </div>
+          <p>Designed and built by <a href="https://danricho.com">danricho</a>.</p>
+        </div>
       </div>
     </div>
 
-    {% block footer %}
-    {#
-    <footer class="text-center">
-      <div class="container">
-        <small>Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small>
-        {{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}
-      </div>
-    </footer>#}
-    {% endblock %}
-        
-  </body>
-
-  {% block height_script %}
-  <script>
-    $('main').css('margin-top', $('header').height()).css('margin-bottom', $('footer').height());
-  </script>  
-  {% endblock %}
-
+    {% block login_error_printpage %}{% endblock %}
+    
+    <script src="{{url_for('send_static', path='layout.js')}}"></script>
   </body>
 </html>

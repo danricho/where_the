@@ -1,70 +1,119 @@
 {% extends "base.j2.html" %}
+
+
+{% macro location_list_item(loc) -%}
+<div class="py-1">
+  <div class="card">
+    <!-- <div class="card-image">
+      <img src="img/osx-el-capitan.jpg" class="img-responsive">
+    </div> -->
+    <div class="card-header">
+      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</div>
+      <!-- <div class="card-subtitle pt-1"></div> -->
+    </div>
+    <div class="card-body py-0 my-1">
+      <span class="mr-3">{% if loc.location != "" %}{{loc.location}} {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span>
+      {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+      <br /><small class="label mr-3">{{loc.id}}</small>
+      <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
+        {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
+        {{loc.fullness}}% Used</span>
+      {% if sorted_str == "Last Updated" %}<br /><small class="">Updated: {{loc.last_change}}</small>{% endif %}
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View Location</button>
+    </div>    
+  </div>
+</div>
+{%- endmacro -%}
+
 {% block main %}
-<main>  
-  <div class="container">
 
-    <section>
-      <div class="row">
-        <div class="col disable-small-reduction">
-          <h3>Location List</h3>
-        </div>
-        <div class="col is-right disable-small-reduction">
-          <span><a href="{{url_for('cycle_setting', setting='sort', next_endpoint='list_locs')}}">[Sorted by {{sorted_str}}]</a></span>
-        </div>
-      </div>
+<div class="columns mb-3">
+  <div class="column"><h4 class="m-0">Location List</h4></div>
+  <div class="column col-auto">
+    <div class="form-group">
+      <select id="sort-select" name="sort-select" class="form-select">
+        <option value="Location" {% if sorted_str == "Location" %} selected{% endif %}>Sort: Location</option>
+        <option value="Fullness" {% if sorted_str == "Fullness" %} selected{% endif %}>Sort: Fullness</option>
+        <option value="Description" {% if sorted_str == "Description" %} selected{% endif %}>Sort: Description</option>
+        <option value="Last Updated" {% if sorted_str == "Last Updated" %} selected{% endif %}>Sort: Last Updated</option>
+        <option value="Type" {% if sorted_str == "Type" %} selected{% endif %}>Sort: Type</option>
+        <option value="ID" {% if sorted_str == "ID" %} selected{% endif %}>Sort: ID</option>
+      </select>
+      <script>
+        $("#sort-select").change(function(){
+          current = "{{sorted_str}}";
+          if ($("#sort-select").val() != current){
+            // setting changed
+            url = "{{url_for('set_setting', setting='sort', value='abcd', next_endpoint='list_locs')}}";
+            url = url.replace("abcd", $("#sort-select").val());
+            location.href=url;
+          }
+        })
+      </script>
+    </div>
+  </div>
+</div>
+  
+<div class="py-3">
+  {% if locs | length %}
 
-      {% if locs | length %}
-      {% for loc in locs %}  
+    {% for loc in locs %} 
+    {{ location_list_item(loc) }}
+    {% endfor %}
 
-        <fieldset>
-          <legend>{{loc.id}}</legend>
-          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
-          <p class="bottom-margin-05">
-            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
-            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
-            <br />
-            <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
-            {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
-            {{loc.fullness}}% Used</span>
-            <br />
-            <button class="button primary is-full-width" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
-            {% if sorted_str == "Last Updated" %}<br /><small class="text-light">Last Updated: {{loc.last_change}}</small>{% endif %}
-          </p>          
-        </fieldset>
+  {% elif current_page == 1 %}
+    <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>      
+  {% endif %}  
+</div>
+  
+<div class="text-center mb-4">
 
-      {% endfor %}
-      {% elif current_page == 1 %}
-      <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>
-      {% endif %}
+  <ul class="pagination py-2">
+    {% if pagination.current_page != 1 %}
+      <li class="page-item"><a href="{{ url_for('list_locs', page=pagination.current_page - 1) }}">Previous</a></li>
+    {% else %}
+      <li class="page-item disabled"><a href="#">Previous</a></li>
+    {% endif %}
 
-
-      <div class="row">
-        <div class="col is-left disable-small-reduction">
-          {% if pagination.current_page != 1 %}
-            <button class="button primary outline" onclick="location.href='{{ url_for('list_locs', page=pagination.current_page - 1) }}'">Prev</button> 
-            <!-- <a class="btn btn-outline-info mb-4" href="{{ url_for('list_locs', page=pagination.current_page - 1) }}"><<</a> -->
-          {% endif %}
-        </div>
-        <div class="col is-center disable-small-reduction">
-          <div class="text-center"><span>Showing {{pagination.first+1}}-{{pagination.last}} of {{pagination.total}}</span><br/><a href="{{url_for('cycle_setting', setting='per_page', next_endpoint='list_locs')}}">[{{pagination.per_page}} per page]</a></div>
-          
-        </div>
-        <div class="col is-right disable-small-reduction">
-          {% if pagination.current_page != pagination.pages %}
-            <button class="button primary outline" onclick="location.href='{{ url_for('list_locs', page=pagination.current_page + 1) }}'">Next</button> 
-            <!-- <a class="btn btn-outline-info mb-4" href="{{ url_for('list_locs', page=pagination.current_page + 1) }}">>></a> -->
-          {% endif %}
-        </div>
-      </div>
-      <p>
-      
-        
-      
-      </p>
-
-      <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
-    </section>
-
+    {% if pagination.current_page > 1 %}<li class="page-item"><a href="{{ url_for('list_locs', page=1) }}">1</a></li>{% endif %}    
+    {% if pagination.current_page-2 > 1 %}<li class="page-item"><span>...</span></li>{% endif %}
+    {% if pagination.current_page-1 > 1 %}<li class="page-item"><a href="{{ url_for('list_locs', page=pagination.current_page-1) }}">{{pagination.current_page-1}}</a></li>{% endif %}
+    <li class="page-item active"><a href="{{ url_for('list_locs', page=pagination.current_page) }}">{{pagination.current_page}}</a></li> 
+    {% if pagination.current_page+1 < pagination.pages %}<li class="page-item"><a href="{{ url_for('list_locs', page=pagination.current_page+1) }}">{{pagination.current_page+1}}</a></li>{% endif %}
+    {% if pagination.current_page+2 < pagination.pages %}<li class="page-item"><span>...</span></li>{% endif %}
+    {% if pagination.current_page < pagination.pages %}<li class="page-item"><a href="{{ url_for('list_locs', page=pagination.pages) }}">{{pagination.pages}}</a></li>{% endif %}
     
-</main>
+    {% if pagination.current_page != pagination.pages %}
+      <li class="page-item"><a href="{{ url_for('list_locs', page=pagination.current_page + 1) }}">Next</a></li> 
+    {% else %}
+      <li class="page-item disabled"><a href="#">Next</a></li> 
+    {% endif %}
+    
+  </ul>
+</div>
+<div class="text-center">
+  Showing {{pagination.first+1}}-{{pagination.last}} of {{pagination.total}} location{% if pagination.total > 1 %}s{% endif %}. 
+  <div class="form-group form-inline mx-3">    
+    <select id="per-page-select" name="per-page-select" class="form-select">
+      <option value="5" {% if pagination.per_page == 5 %} selected{% endif %}>5 per page</option>
+      <option value="10" {% if pagination.per_page == 10 %} selected{% endif %}>10 per page</option>
+      <option value="20" {% if pagination.per_page == 20 %} selected{% endif %}>20 per page</option>
+      <option value="50" {% if pagination.per_page == 50 %} selected{% endif %}>50 per page</option>
+      <option value="100" {% if pagination.per_page == 100 %} selected{% endif %}>100 per page</option>
+    </select>
+    <script>
+      $("#per-page-select").change(function(){
+        current = "{{pagination.per_page}}";
+        if ($("#per-page-select").val() != current){
+          // setting changed
+          url = "{{url_for('set_setting', setting='per_page', value='abcd', next_endpoint='list_locs')}}";
+          url = url.replace("abcd", $("#per-page-select").val());
+          location.href=url;
+        }
+      })
+    </script>
+  </div>
+</div>
 {% endblock %}

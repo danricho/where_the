@@ -1,5 +1,5 @@
 {% extends "base.j2.html" %}
-{% block main %}
+{% block login_error_printpage %}
 <style>
 
   #flex_centerer {
@@ -27,23 +27,22 @@
 </style>
 <div id="flex_centerer">
   <div id="centered">
-    <div class="thin">
       <h2 class="">Welcome</h2>
       <form action="" method="post">            
         <fieldset>
           <legend>Login</legend>
           <p>
-            <input type="text" class="form-control" placeholder="username" required="required" name="username">
+            <input type="text" class="form-input" placeholder="username" required="required" name="username">
           </p>
           <p>
-            <input type="password" class="form-control" placeholder="password" required="required" name="password">
+            
+            <input type="password" class="form-input" placeholder="password" required="required" name="password">
           </p>
           <p>
-            <button type="submit" class="button primary">Log in</button>
+            <button type="submit" class="btn btn-primary">Log in</button>
           </p>
         </fieldset>
       </form>   
-    </div>
     <div class="thin" style="margin: 3em 0;">
       <p>
         {{ link_pill("https://danricho.com", ["built by", "danricho"]) }}
@@ -61,11 +60,13 @@
         {{ link_pill("https://jenil.github.io/chota/", ["built with", "Chota CSS"]) }}
       </p>      
     </div> 
-    <small class="text-light">Git Revision: <span title="Commit Message: {{git_revision.subject}}">{{git_revision.hash}} ({{git_revision.timestamp}})</span>{% if git_revision.modified %} - MODIFIED{% endif %}</small> 
+    <small class="tooltip" data-tooltip="{{git_revision.timestamp}}{% if git_revision.modified %}&#10;(MODIFIED){% endif %}">
+      Version: {{git_revision.hash}}{%- if git_revision.modified %}*{% endif %}</small> 
   </div>
 </div>
 <script>
   $(document).prop('title', $(document).prop('title') + " - Login");  
+  $(".off-canvas").hide();
 </script>
 {% endblock %}
 {% block footer %}{% endblock %}

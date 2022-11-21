@@ -1,0 +1,30 @@
+.vh100 { min-height:100vh; }
+.top-panel { 
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+#nav-panel { 
+  width: 12rem; 
+  padding: 1rem !important;
+}
+.main-panel { 
+  padding: 1rem !important;
+}
+
+@media (max-width:960px){
+  .main-panel { padding-top: 4rem !important; }
+  .top-panel {
+    -webkit-backdrop-filter:blur(5px);
+    backdrop-filter:blur(5px);
+    background: var(--color-shaddow);
+    right: 0;
+    padding: 0.5rem 1rem;
+  }
+  .sidebar-toggle { font-size: 1rem; }
+  .off-canvas-overlay { 
+    -webkit-backdrop-filter:blur(5px);
+    backdrop-filter:blur(5px);
+  }
+}

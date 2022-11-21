@@ -23,9 +23,94 @@ def load_config():
   global config
   with open(base_path + "/config.yml", "r") as f:
     config = yaml.safe_load(f)
+    
 def save_config():
   with open(base_path + "/config.yml", "w") as f:
     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+def to_rgba(col_string):
+
+  def clamp(value, min_value, max_value):
+    return max(min_value, min(max_value, value))
+
+  def saturate(value):
+    return clamp(value, 0.0, 1.0)
+
+  def hue_to_rgb(h):
+    r = abs(h * 6.0 - 3.0) - 1.0
+    g = 2.0 - abs(h * 6.0 - 2.0)
+    b = 2.0 - abs(h * 6.0 - 4.0)
+    return saturate(r), saturate(g), saturate(b)
+
+  def hsl_to_rgb(h, s, l):
+    r, g, b = hue_to_rgb(h)
+    c = (1.0 - abs(2.0 * l - 1.0)) * s
+    r = (r - 0.5) * c + l
+    g = (g - 0.5) * c + l
+    b = (b - 0.5) * c + l
+    return r, g, b
+
+  col_string = col_string.replace(" ", "").strip().lower()
+  m = re.match(r"^(#[0-9a-f]{3}|(#)(?:[0-9a-f]{2}){2,4}|(rgb|hsl)(a?)\(([^)]+)\))$", col_string)
+
+  if m.group(1)[0] == "#":
+    s = m.group(1).lstrip("#")
+    if len(s) == 3:
+        r = int(s[0]+s[0], 16)
+        g = int(s[1]+s[1], 16)
+        b = int(s[2]+s[2], 16)  
+        a = 1.0
+    elif len(s) == 6:
+        r = int(s[0:2], 16)
+        g = int(s[2:4], 16)
+        b = int(s[4:6], 16) 
+        a = 1.0 
+    elif len(s) == 8:
+        r = int(s[0:2], 16)
+        g = int(s[2:4], 16)
+        b = int(s[4:6], 16) 
+        a = round(int(s[6:8], 16) / 255.0,2)
+    return {"r": r, "g": g, "b": b, "a": a}
+
+  elif m.group(3) == "rgb":
+    if m.group(4) == "a":
+        r,g,b,a = m.group(5).split(',') 
+    else:
+        a = 1.0
+        r,g,b = m.group(5).split(',')
+    
+    if r[-1] == "%":
+        r = round(float(r.rstrip("%"))*2.55)
+    else:
+        r = int(r)
+    if g[-1] == "%":
+        g = round(float(g.rstrip("%"))*2.55)
+    else:
+        g = int(g)
+    if b[-1] == "%":
+        b = round(float(b.rstrip("%"))*2.55)
+    else:
+        b = int(b)
+    a = float(a)
+    return {"r": r, "g": g, "b": b, "a": a}
+
+  elif m.group(3) == "hsl":
+    if m.group(4) == "a":
+        h,s,l,a = m.group(5).split(',') 
+    else:
+        a = 1.0
+        h,s,l = m.group(5).split(',')
+
+    h = int(h)/360.0
+    s = int(s.rstrip("%"))/100.0
+    l = int(l.rstrip("%"))/100.0     
+    
+    r,g,b = hsl_to_rgb(h,s,l)
+    a = float(a)
+    return {"r": round(r*255), "g": round(g*255), "b": round(b*255), "a": round(a,2)}
+      
+  print("NOTHING")
+  return m.group(3,4,5)
+
 
 config = {}
 load_config()
@@ -219,6 +304,8 @@ users = []
 for username in config['USERS']:
   users.append(User(username, config['USERS'][username].get('password', 'UNSET'), config['USERS'][username].get('email', None)))
 
+sort_descriptions = ["Location", "Fullness", "Description", "Last Updated", "Type", "ID"]
+
 ############################################################
 #           DECORATED FUNCTIONS FOR FLASK-LOGIN            #
 ############################################################
@@ -325,11 +412,8 @@ def logout():
 @app.route(config['SITE']['PATH_PREFIX'] + '/')
 @login_required
 def home():
-  load_json()    
-  load_config()  
-  return render_template('home.j2.html', SITE=config['SITE'], STATS={ "LOCS": len(locs.values()), "ITEMS": len(sum([loc['items'] for loc in locs.values()],[])) }, AUTHELIA_URL=config.get('AUTHELIA_URL', None))
+  return redirect(url_for("list_locs")) 
   
-sort_descriptions = ["Location", "% Full", "Description", "Last Updated", "Type", "ID"]
 # list locations
 @app.route(config['SITE']['PATH_PREFIX'] + '/list')
 @login_required
@@ -357,7 +441,7 @@ def list_locs():
   elif sort_descriptions[sorting] == "ID":
     sorted_locs = list(sorted(locs.values(), key=lambda i: (i['id'])))
     # print([(i['id']) for i in sorted_locs])
-  elif sort_descriptions[sorting] == "% Full":
+  elif sort_descriptions[sorting] == "Fullness":
     sorted_locs = list(sorted(locs.values(), key=lambda i: (-i['fullness'], i['description'])))
     # print([(i['fullness'], i['description']) for i in sorted_locs])
   elif sort_descriptions[sorting] == "Description":
@@ -377,7 +461,9 @@ def list_locs():
       items_per_page = config['USERS'][user].get("LOCATIONS_PER_PAGINATED_PAGE", 10)
 
   page = request.args.get('page', 1, type=int)
-  pages = round(len(sorted_locs)/items_per_page + .499) 
+  page = max(page, 1) # has to be minimum 1
+  pages = round(len(sorted_locs)/items_per_page + .499)   
+  page = min(page, pages) # has to be at most the last page
   from_page = int(page) * items_per_page - items_per_page
   upto_page = int(page) * items_per_page
   upto_page = min(upto_page, len(sorted_locs))
@@ -400,9 +486,9 @@ def search():
     submit_data = dict(request.form)
     return render_template('search.j2.html', form_data=submit_data, results=search_locs(submit_data['search-input'], mode=submit_data["search-mode-select"])) 
 
-@app.route(config['SITE']['PATH_PREFIX'] + '/cycle/<string:setting>/<string:next_endpoint>')
+@app.route(config['SITE']['PATH_PREFIX'] + '/set-setting/<string:setting>/<string:value>/<string:next_endpoint>')
 @login_required
-def cycle_setting(setting, next_endpoint):
+def set_setting(setting, value, next_endpoint):
 
   load_config()
   global config
@@ -415,29 +501,11 @@ def cycle_setting(setting, next_endpoint):
     if current_user.username.lower() == user.lower():
       
       if setting == "sort":
-        if "LOCATION_SORTING" not in config['USERS'][user]:
-          config['USERS'][user]["LOCATION_SORTING"] = 1
-        else:
-          config['USERS'][user]["LOCATION_SORTING"] += 1
-          if config['USERS'][user]["LOCATION_SORTING"] == len(sort_descriptions):
-            config['USERS'][user]["LOCATION_SORTING"] = 0
+        config['USERS'][user]["LOCATION_SORTING"] = sort_descriptions.index(value)
         save_config()
 
       if setting == "per_page":
-        if "LOCATIONS_PER_PAGINATED_PAGE" not in config['USERS'][user]:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
-        
-        if config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 5:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 10
-        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 10:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 20
-        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 20:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 50
-        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 50:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 100
-        elif config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] == 100:
-          config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = 5
-
+        config['USERS'][user]["LOCATIONS_PER_PAGINATED_PAGE"] = int(value)
         save_config()
 
   return redirect(url_for(next_endpoint)) 
@@ -583,8 +651,13 @@ def inject_data():
   return {
     'git_revision': git_revision,
     'PRIMARY_COLOR': config['PRIMARY-COLOR'],
+    'PRIMARY_COLOR_RGB': to_rgba(config['PRIMARY-COLOR']),
     'request_info': request.headers,
-    'user' : props(current_user),
+    'user': props(current_user),
+    'path': request.path,
+    'SITE': config['SITE'],
+    'STATS': { "LOCS": len(locs.values()), "ITEMS": len(sum([loc['items'] for loc in locs.values()],[])) },
+    'AUTHELIA_URL': config.get('AUTHELIA_URL', None),
   }
 
 ############################################################

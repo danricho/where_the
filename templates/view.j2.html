@@ -1,47 +1,48 @@
 {% extends "base.j2.html" %}
 {% block main %}
-<main>  
-  <div class="container">
 
-    <section>
-      <h2>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h2>
-      <p><small> ID: {{loc.id}}</small></p>  
+<h4>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
+
+<div class="py-3">
+  <p>ID: {{loc.id}}</p>  
   
-      <fieldset class="bottom-padding-15">
-        <legend>Location Information</legend>        
-        <p>
-          <span><span class="item">@ {% if loc.location != "" %}{{loc.location}}{% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span>
-          <br/><span class="item">{% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span>
-        </p>
-        <div class="meter-holder">
-          <div class="meter" data-before="Capacity Used: {{loc.fullness}}%">
-            <div style="width: {{loc.fullness}}%; background-color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);"></div>
-          </div>
-        </div>          
-
-      </fieldset>
+    {% if loc.location == "" %}<p>No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!</p>{% endif %}
+    {% if loc.type == "" %}<p>No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!</p>{% endif %}
+    {% if loc.location != "" and loc.type != "" %}
+    <p>{{loc.type}} @ {{loc.location}}</p>
+    {% endif %}
+     
   
-      <fieldset class="bottom-padding-15">        
-        <legend>{{loc['items'] | length}} Stored Item{% if loc['items'] | length != 1 %}s{%endif%}</legend>
-        {% if loc['items'] | length %}
-        {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}  
-        {% else %}
-        <p>No items yet. <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> to add some!</p>
-        {% endif %}
-      </fieldset>
+  <div class="my-3 mt-5">
+    <div class="meter-holder">
+      <div class="meter" data-before="Capacity Used: {{loc.fullness}}%">
+        <div style="width: {{loc.fullness}}%; background-color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);"></div>
+      </div>
+    </div>  
+  </div>
 
-      <p><small>Location Last Updated: <i>{{loc.last_change}}</i></small></p>
-      <p><button class="button primary is-full-width" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button></p>
-      <p><button class="button primary is-full-width" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR</button></p>
+  <div class="py-3">
+    <h4 class="mt-5">{{loc['items'] | length}} Stored Item{% if loc['items'] | length != 1 %}s{%endif%}</h4>
+    {% if loc['items'] | length %}
+      {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}   
+    {% else %}
+    <p>No items yet. <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> to add some!</p>
+    {% endif %}   
+  </div> 
 
-      {% if from_search %}
-      <p><br/><button class="button primary outline is-full-width" onclick="history.back()">Back to Text Search Results</button></p>
-      {% endif %}
-      <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('list_locs')}}'">Location List</button></p>    
-      <p><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
-      
-    </section>
+  <div class="py-5">
+    <small>Location Last Updated: <i>{{loc.last_change}}</i></small>
+  </div>
 
-  </div>    
-</main>  
+  <div class="my-3 mt-5">
+    <button class="btn btn-primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
+    <button class="btn btn-primary" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR Label</button>
+  </div>
+  <div class="my-3">
+    {% if from_search %}
+    <button class="btn" onclick="history.back()">Back to Text Search Results</button>
+    {% endif %}
+  </div>  
+</div>  
+
 {% endblock %}

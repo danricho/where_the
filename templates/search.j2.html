@@ -1,55 +1,65 @@
 {% extends "base.j2.html" %}
+
+{% macro location_list_item(loc) -%}
+<div class="py-1">
+  <div class="card">
+    <!-- <div class="card-image">
+      <img src="img/osx-el-capitan.jpg" class="img-responsive">
+    </div> -->
+    <div class="card-header">
+      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</div>
+      <!-- <div class="card-subtitle pt-1"></div> -->
+    </div>
+    <div class="card-body py-0 my-1">
+      <span class="mr-3">{% if loc.location != "" %}{{loc.location}} {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span>
+      {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+      <br /><small class="label mr-3">{{loc.id}}</small>
+      <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
+        {{loc['items'] | length}} item{% if loc['items'] | length != 1 %}s{%endif%},
+        {{loc.fullness}}% Used</span>
+      <div class="card-title h5 mt-3">{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}{% if loc['items'] | length > 0 %}:{%endif%}</div>
+      {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %} 
+      {% if sorted_str == "Last Updated" %}<br /><small class="">Updated: {{loc.last_change}}</small>{% endif %}
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View Location</button>
+    </div>    
+  </div>
+</div>
+{%- endmacro -%}
+
 {% block main %}
-<main>  
-  <div class="container">
 
-    <section>
-      <h3 class="bottom-margin-05">Text Search for Items/Locations</h3>
-      <form id="search" method="post">
-        <div class="row">
-          <div class="col-12 col-6-md col-7-lg">
-            <input class="is-full-width" type="text" name="search-input" id="search-input" placeholder="Enter search query..." value="{{form_data['search-input']}}">
-          </div>
-          <div class="col-6 col-4-md col-3-lg">
-            <select class="is-full-width" id="search-mode-select" name="search-mode-select">
-              <option value="any"{% if form_data['search-mode-select'] == "any" %} selected{% endif %}>Keywords - Match ANY</option>
-              <option value="all"{% if form_data['search-mode-select'] == "all" %} selected{% endif %}>Keywords - Match ALL</option>
-              <option value="re"{% if form_data['search-mode-select'] == "re" %} selected{% endif %}>Regular Expression</option>
-            </select>
-          </div>
-          <div class="col-6 col-2-md">
-            <button type="submit" class="button primary is-full-width">Search</button>
-          </div>
-        </div>
-      </form>
+<h4 class="m-0">Text Search for Items/Locations</h4>
 
-      {% if results!=None %}
-      <h3 class="top-margin-15">{{results.results|length}} Result{% if results.results|length != 1 %}s{% endif %}</h3>
-      
-      {% for loc in results.results %}  
-        <fieldset>
-          <legend>{{loc.id}}</legend>
-          <h4>{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
-          <p>
-            {% if loc.location != "" %}{{loc.location}} | {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this! | {% endif %}
-            {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
-          </p>
-            <strong>{{loc['items'] | length}} Matching Item{% if loc['items'] | length != 1 %}s{%endif%}{% if loc['items'] | length > 0 %}:{%endif%}</strong>
-            {% for item in loc['items'] | sort %}<div class="item"><span>{{item}}</span></div>{% endfor %}  
-            <button class="button primary is-full-width top-margin-05" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">View</button> 
-          </p>          
-        </fieldset>
+<div class="my-3">
 
-      {% endfor %}
+  <form id="search" method="post">
+    <input class="form-input form-inline" id="search-input" name="search-input" type="text" placeholder="Enter search query..." value="{{form_data['search-input']}}" />
+    <div class="form-group form-inline my-3">
+      <select class="form-select " id="search-mode-select" name="search-mode-select">
+        <option value="any"{% if form_data['search-mode-select'] == "any" %} selected{% endif %}>Keywords - Match ANY</option>
+        <option value="all"{% if form_data['search-mode-select'] == "all" %} selected{% endif %}>Keywords - Match ALL</option>
+        <option value="re"{% if form_data['search-mode-select'] == "re" %} selected{% endif %}>Regular Expression</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
 
-      {% endif %}
-      
-      
-    </section>
+</div>
+<div class="mt-9">
 
-    <p><br/><button class="button primary outline is-full-width" onclick="location.href='{{url_for('home')}}'">Home</button></p>
-
-
+  {% if results != None %}
+    <h4>{{results.results|length}} Matching Location{% if results.results|length != 1 %}s{% endif %}</h4>
     
-</main>
+    {% for loc in results.results %}  
+
+    {{ location_list_item(loc) }}
+    {% endfor %}
+
+  {% elif current_page == 1 %}
+    <p>No locations created yet. <a href="{{url_for('create')}}">Create</a> some!</p>      
+  {% endif %}  
+</div>
+
 {% endblock %}

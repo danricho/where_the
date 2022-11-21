@@ -22,7 +22,7 @@ A simple Python Flask web application which helps keep track of your stored item
    - type (eg. Shelf, Plastic Box, etc)
    - recently edited
    - unique ID
-   - how used (% full)
+   - how used (fullness)
 - QR codes to assist location tracking based on unique ID
 - Print QR code labels from website
 - Simple JSON storage (pros & cons)
@@ -107,7 +107,11 @@ SITE:
 
 # THE MAIN COLOR. 
 # THE DEFAULT #C0A890 IS BASED ON A CARBOARD BOX COLOR :)
-# CAN BE ANY VALID CSS COLOR STRING - EG: rgb(128,128,128)
+# CAN BE IN ONE OF THE FOLLOWING FORMATS: 
+#  - rgb(192, 168, 144)
+#  - hsl(30, 28%, 66%)
+#  - #C0A890
+# NOTE: ALPHA VALUES WILL BE IGNORED
 PRIMARY-COLOR: '#C0A890' 
 
 #-------------------------------------
@@ -187,13 +191,7 @@ I do have a few ideas that I'd like to add while maintaining the current simplic
 
 Please propose and discuss ideas [here](https://github.com/danricho/where_the/discussions)!
 
-My ideas so far (most would be choosen via a `config.yml` option):​
-- Add `Dark Mode` to Chota CSS, which is very easy (as per the Chota webpage) and a toggle for it in the fixed header
-- Add additional storage options other than raw JSON file  - [discussion](https://github.com/danricho/where_the/discussions/3)
-- UI improvements - [discussion](https://github.com/danricho/where_the/discussions/9)
-- Code improvements - [discussion](https://github.com/danricho/where_the/discussions/7)
-
-I welcome contributions to these with Pull requests!
+I would welcome any contributions to these with pull requests!
 
 ## Change Log
 
