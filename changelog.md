@@ -1,10 +1,15 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-21
+Last updated: 2022-11-24
+
+**2022-11-24**
+
+ - LATEST!: *Tweak GitHub Action versions to fix minor metadata config issue.*
+ - 238d0a3: *Create GitHub Action to publish Docker Image to GitHub Packages (#21)*
 
 **2022-11-21**
 
- - LATEST!: *Change pill to Spectre CSS from Chota CSS*
+ - e18f520: *Change pill to Spectre CSS from Chota CSS*
  - 48d9029: *Update screenshots for UI update.*
  - 2e84965: *Improved the layout of the entire app; Moved from chota.css to spectre.css; Menu in off-canvas panel; primary color improvements*
 
