@@ -4,7 +4,8 @@ Last updated: 2022-11-24
 
 **2022-11-24**
 
- - LATEST!: *Tweak GitHub Action versions to fix minor metadata config issue.*
+ - LATEST!: *Update README to cover pre-build docker image.*
+ - 14d9ad5: *Tweak GitHub Action versions to fix minor metadata config issue.*
  - 238d0a3: *Create GitHub Action to publish Docker Image to GitHub Packages (#21)*
 
 **2022-11-21**

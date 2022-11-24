@@ -51,7 +51,7 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
 1.  Run `main.py` in your venv.
     eg: `venv/bin/python main.py` or activate venv then `python main.py` 
 
-## Installation - Docker Compose
+## Installation - Docker
 
 *Running in Docker is a quick way to get this to run as a service (launches on boot etc).*
 
@@ -75,26 +75,35 @@ Networking settings are more complicated when using docker, so check the followi
 - in `docker-compose.yml`:
   - `services.web-app.ports` - `80:5000` - second number needs to match above, first is the port that docker will use. *Note: 80 may require special permission*.
 
-See the comments in [Issue #18](https://github.com/danricho/where_the/issues/18).
+### Pre-Built Docker Image
+
+An alternative to building the docker image is now provided thanks to [@LukeEvansTech](https://github.com/LukeEvansTech).
+Each push to this repo now re-builds a 'package' which is GitHub's name for pre-made Docker Images and can be used as follows:
+
+- Using docker command to pull the image to the local machine:
+  `docker pull ghcr.io/danricho/where_the:main`
+- Use  in docker-compose file:
+  `image: ghcr.io/danricho/where_the:main"`
+- Use docker run, although the correct arguments will need to be provided - see `docker-compose.yml` for more information.
 
 ## Updating to the latest GitHub version
 
-To update, all that shoule be needed is to run the command `git pull` in your Where The ?!? directory.
+To update, all that should be needed is to run the command `git pull` in your Where The ?!? directory.
 
 If you get a message about local file changes which would be overwritten by merge, this means you have modified one of the tracked files. The config and data files (as made during installation) are not the files git is talking about. 
 
-The command `git diff` will tell you what is different about the files. Running `git reset --hard HEAD` will reset the uncommited file changes, but **NOTE THAT** you may lose work if you do this. Only do this if you understand what you are doing. And once your Repo is clean, the `git pull` whould work.
+The command `git diff` will tell you what is different about the files. Running `git reset --hard HEAD` will reset the uncommited file changes, but **NOTE THAT** you may lose work if you do this. Only do this if you understand what you are doing. And once your Repo is clean, the `git pull` should work.
 
 There are many resources available online to learn more about Git operations.
 
-### Extra Update Step for Docker Users
+### Extra Update Step for Docker
 
 After updating, the docker image needs to be rebuilt as the app files (other than those mapped in `docker-compose.yml`) are cached inside the docker image. This automatically happens the first time you bring Where The ?!? up.
 
 This can be done by running docker-compose with a few extra commands: 
 `docker-compose up -d --force-recreate --build`
 
-This was the cause in [Issue #18](https://github.com/danricho/where_the/issues/18).
+If using the pre-built image, ensure that you freshly pull the latest image.
 
 ## Configuration (config.yml)
 
