@@ -83,7 +83,7 @@ Each push to this repo now re-builds a 'package' which is GitHub's name for pre-
 - Using docker command to pull the image to the local machine:
   `docker pull ghcr.io/danricho/where_the:main`
 - Use  in docker-compose file:
-  `image: ghcr.io/danricho/where_the:main"`
+  `image: ghcr.io/danricho/where_the:main`
 - Use docker run, although the correct arguments will need to be provided - see `docker-compose.yml` for more information.
 
 ## Updating to the latest GitHub version
