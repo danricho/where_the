@@ -4,7 +4,8 @@ Last updated: 2023-05-21
 
 **2023-05-21**
 
- - LATEST!: *Minor editing improvement to avoid missing half added items on location save*
+ - LATEST!: *Remote repo stops it working... work in progress for the version check stuff.*
+ - eac7889: *Minor editing improvement to avoid missing half added items on location save*
  - f9319ac: *Add QR print improvements (and remove single QR print from view page) - Issue #25*
  - 14ee392: *Commit other half of the addition of Location CSV export*
  - 8254ea5: *Add forgotten GitPython dependancy to requirements.txt*

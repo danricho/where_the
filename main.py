@@ -17,19 +17,21 @@ active_branch = repo.active_branch
 current_commit = repo.head.commit
 current_commit_datetime = repo.head.commit.committed_datetime
 current_commit_message = repo.head.commit.message
-repo.remotes.origin.fetch()
-commits_behind = len(list(repo.iter_commits(f'{active_branch}..origin/main')))
-commits_ahead = len(list(repo.iter_commits(f'origin/main..{active_branch}')))
+# repo.remotes.origin.fetch()
+# commits_behind = len(list(repo.iter_commits(f'{active_branch}..origin/main')))
+# commits_ahead = len(list(repo.iter_commits(f'origin/main..{active_branch}')))
 dirty_repo = repo.is_dirty()
 
 try:
+
+
   git_revision = {
     "hash": f"{current_commit}"[:7],
     "timestamp": current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S"),
     "subject": current_commit_message,
     "modified": dirty_repo,
-    "commits behind": commits_behind,
-    "commits ahead": commits_ahead
+    # "commits behind": commits_behind,
+    # "commits ahead": commits_ahead
   }
 except:  
   git_revision = {
@@ -37,8 +39,8 @@ except:
     "timestamp": "",
     "subject": "",
     "modified": "",
-    "commits behind": "",
-    "commits ahead": ""
+    # "commits behind": "",
+    # "commits ahead": ""
   }
 
 ############################################################
