@@ -105,6 +105,7 @@
 
 
 <h4>Labels to Print</h4>
+<p><button type="button" class="btn btn-primary" onclick="none();">All None</button> <button type="button" class="btn btn-primary" onclick="decre();">All Less</button> <button type="button" class="btn btn-primary" onclick="incre();">All More</button></p>
 <div id="loc-list">
   {% for loc in locs %}
   <div class="item" data-target="{{loc.id}}"><span><strong class="id">{{loc.id}}</strong> | {{loc.description}} <a id="decr" href="#" onclick="decr(this); return false;">-</a><strong id="count">1</strong><a id="incr" href="#" onclick="incr(this); return false;">+</a></div>
@@ -132,6 +133,33 @@
       syn_to_qr();
     }
   }
+
+  function none(){
+    $(".item strong#count").each(function(){
+      $(this).text(0)
+      syn_to_qr();
+    })
+  }
+  function incre(){
+    $(".item strong#count").each(function(){      
+      current = parseInt($(this).text());
+      current += 1;
+      $(this).text(current)
+      syn_to_qr();      
+    })
+  }
+  function decre(){
+    $(".item strong#count").each(function(){
+      current = parseInt($(this).text());
+      if (current > 0 ){
+        current -= 1;
+        $(this).text(current)
+        syn_to_qr();
+      }  
+    })
+
+  }
+
 
 
 </script>
@@ -208,7 +236,6 @@
       }      
     })
   }
-
 
   $("#offset-input").bind('keyup mouseup', function () { syn_to_qr(); });
 

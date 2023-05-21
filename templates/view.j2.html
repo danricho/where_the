@@ -35,8 +35,7 @@
   </div>
 
   <div class="my-3 mt-5">
-    <button class="btn btn-primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
-    <button class="btn btn-primary" onclick="location.href='{{url_for('print_qr', url_id=loc.id)}}'">Print QR Label</button>
+    <button id="edit-button" class="btn btn-primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
   </div>
   <div class="my-3">
     {% if from_search %}
@@ -44,5 +43,19 @@
     {% endif %}
   </div>  
 </div>  
+
+
+<script>    
+
+  $("html").bind("keypress", function (e) {
+    // console.log(e.keyCode)
+    if (e.keyCode == 101 || e.keyCode == 69) {
+      // "E" or "e"
+      $("#edit-button").click()
+      return false;
+    }
+  });
+
+</script>
 
 {% endblock %}
