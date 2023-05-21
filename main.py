@@ -6,14 +6,39 @@ from flask import Flask, request, Response, abort, render_template, redirect, ur
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
 import traceback, sys
+from git import Repo
 
 base_path = os.path.dirname(os.path.realpath(__file__))
-git_revision = {
-  "hash": subprocess.check_output(["git", "show", "-s", "--format=%h"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
-  "timestamp": subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%Y-%m-%d %H:%M:%S"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
-  "subject": subprocess.check_output(["git", "show", "-s", "--format=%s"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode(),
-  "modified": bool(len(subprocess.check_output(["git", "diff"], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode()))
-}
+
+repo = Repo.init(base_path)
+
+active_branch = repo.active_branch
+current_commit = repo.head.commit
+current_commit_datetime = repo.head.commit.committed_datetime
+current_commit_message = repo.head.commit.message
+repo.remotes.origin.fetch()
+commits_behind = len(list(repo.iter_commits(f'{active_branch}..origin/main')))
+commits_ahead = len(list(repo.iter_commits(f'origin/main..{active_branch}')))
+dirty_repo = repo.is_dirty()
+
+try:
+  git_revision = {
+    "hash": f"{current_commit}"[:7],
+    "timestamp": current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+    "subject": current_commit_message,
+    "modified": dirty_repo,
+    "commits behind": commits_behind,
+    "commits ahead": commits_ahead
+  }
+except:  
+  git_revision = {
+    "hash": "ERROR",
+    "timestamp": "",
+    "subject": "",
+    "modified": "",
+    "commits behind": "",
+    "commits ahead": ""
+  }
 
 ############################################################
 #              LOADING CONFIG FROM YAML FILE               #
@@ -596,6 +621,21 @@ def delete(url_id):
     return redirect(url_for('home')) 
   else:
     raise locationIdNotFound()
+
+@app.route(config['SITE']['PATH_PREFIX'] + '/export/')
+@login_required
+def export_csv():
+  load_json()   
+  dataCSV = "ID,Type,Description,Location\n"
+  for item in locs.values():
+    dataCSV += f"{item['id']},{item['type']},{item['description']},{item['location']}\n"  
+  return send_file(
+    BytesIO(dataCSV.encode()),
+    mimetype="text/csv",
+    download_name ="export.csv"
+  )
+
+
 
 # serve static files
 @app.route(config['SITE']['PATH_PREFIX'] + '/static/<path:path>')

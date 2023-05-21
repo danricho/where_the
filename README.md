@@ -51,6 +51,10 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
 1.  Run `main.py` in your venv.
     eg: `venv/bin/python main.py` or activate venv then `python main.py` 
 
+**NOTE:**
+If running the script as root (or sudo), the directory ownership may need to be changed to root using `chown -R root .`. This is due to a new ownership check in newer versions of git and Where The checks for new versions when it starts.
+
+
 ## Installation - Docker
 
 *Running in Docker is a quick way to get this to run as a service (launches on boot etc).*

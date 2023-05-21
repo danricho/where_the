@@ -1,10 +1,15 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2022-11-24
+Last updated: 2023-05-21
+
+**2023-05-21**
+
+ - LATEST!: *Issue #23: Added to readme how to fix ownership ambiguity issue*
 
 **2022-11-24**
 
- - LATEST!: *Update README to cover pre-build docker image.*
+ - 80b63de: *Remove additional quote from README.md (#22)*
+ - 3fcda2f: *Update README to cover pre-build docker image.*
  - 14d9ad5: *Tweak GitHub Action versions to fix minor metadata config issue.*
  - 238d0a3: *Create GitHub Action to publish Docker Image to GitHub Packages (#21)*
 
