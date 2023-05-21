@@ -2,11 +2,12 @@ import json, yaml, random
 import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
 from datetime import datetime, date
-from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory, session
+from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory, session, send_file
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
 import traceback, sys
 from git import Repo
+from io import BytesIO
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 

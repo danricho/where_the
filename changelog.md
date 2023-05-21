@@ -4,7 +4,8 @@ Last updated: 2023-05-21
 
 **2023-05-21**
 
- - LATEST!: *Add forgotten GitPython dependancy to requirements.txt*
+ - LATEST!: *Commit other half of the addition of Location CSV export*
+ - 8254ea5: *Add forgotten GitPython dependancy to requirements.txt*
  - d9f1b8a: *Issue #23: Added to readme how to fix ownership ambiguity issue*
 
 **2022-11-24**

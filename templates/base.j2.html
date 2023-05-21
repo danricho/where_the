@@ -171,6 +171,7 @@
             <div class="divider text-center" data-content=""></div>
             <li class="menu-item"><a href="{{ url_for('create') }}">Create a Location</a></li>
             <li class="menu-item"><a href="{{ url_for('print_batch') }}">Print Labels</a></li>
+            <li class="menu-item"><a href="{{ url_for('export_csv') }}" target="_blank">Location CSV</a></li>
             <div class="divider text-center" data-content=""></div>
             <li class="menu-item my-2"><span class="tooltip" data-tooltip="Authenticated via&#10;{{user.type}}"><i class="icon icon-people mr-3"></i>{{user.username | capitalize }}</span></li>
             <li class="menu-item">User Settings *</li>
