@@ -4,7 +4,8 @@ Last updated: 2023-05-21
 
 **2023-05-21**
 
- - LATEST!: *Issue #23: Added to readme how to fix ownership ambiguity issue*
+ - LATEST!: *Add forgotten GitPython dependancy to requirements.txt*
+ - d9f1b8a: *Issue #23: Added to readme how to fix ownership ambiguity issue*
 
 **2022-11-24**
 
