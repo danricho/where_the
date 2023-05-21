@@ -86,6 +86,7 @@
   });
 
   $("form").submit( function(ev){
+    $("#add-item-button").click();
     console.log(make_item_list())
     $("<input />").val(JSON.stringify(make_item_list())).attr({"type": "hidden", "name": "items-list", "id": "items-list"}).appendTo("form")
   })
