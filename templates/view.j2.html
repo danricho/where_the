@@ -1,7 +1,7 @@
 {% extends "base.j2.html" %}
 {% block main %}
 
-<h4>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</h4>
+<h4>{% if loc.description != "" %}{{loc.description}}{% else %}Un-named Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.sealed %} <small class="label ml-3">Sealed</small> {% endif %}</h4>
 
 <div class="py-3">
   <p>ID: {{loc.id}}</p>  

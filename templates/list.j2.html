@@ -8,7 +8,7 @@
       <img src="img/osx-el-capitan.jpg" class="img-responsive">
     </div> -->
     <div class="card-header">
-      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.sealed %} <small>[Sealed]</small> {% endif %}</div>
+      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.sealed %} <small class="label ml-3">Sealed</small> {% endif %}</div>
       <!-- <div class="card-subtitle pt-1"></div> -->
     </div>
     <div class="card-body py-0 my-1">
