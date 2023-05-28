@@ -207,6 +207,8 @@ def daily_backup():
     os.remove(f'{base_path}/{backups_directory}{files[0]}')
     files = sorted([f for f in os.listdir(f'{base_path}/{backups_directory}') if "bkp" in f])
 def save_json():
+  for loc in locs:
+    locs[loc]['items'] = [x.strip() for x in locs[loc]['items']]
   with open(base_path + '/data.json', 'w') as outfile:
     outfile.write(json.dumps(locs, indent=4))
 load_json()

@@ -4,7 +4,8 @@ Last updated: 2023-05-28
 
 **2023-05-28**
 
- - LATEST!: *Add optional 'sealed' and 'destination' attributes to locations*
+ - LATEST!: *Added strip() for stored items on save_json calls.*
+ - dfbdcf0: *Add optional 'sealed' and 'destination' attributes to locations*
  - 431ce81: *Hopefully fix the ongoing git issues and show new version availability.*
 
 **2023-05-21**
