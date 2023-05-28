@@ -1,7 +1,6 @@
 import json, yaml, random
-import string, os, re, time, subprocess
-import qrcode, qrcode.image.svg
-from datetime import datetime, date, timezone
+import string, os, re, time
+from datetime import datetime, timezone
 from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory, session, send_file
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
@@ -59,7 +58,6 @@ def load_config():
   global config
   with open(base_path + "/config.yml", "r") as f:
     config = yaml.safe_load(f)
-    
 def save_config():
   with open(base_path + "/config.yml", "w") as f:
     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
@@ -146,7 +144,6 @@ def to_rgba(col_string):
       
   print("NOTHING")
   return m.group(3,4,5)
-
 
 config = {}
 load_config()
@@ -599,9 +596,10 @@ def edit(url_id):
     save_data = dict(request.form)
     save_data['items-list'] = json.loads(save_data['items-list'])
     save_data['fullness-input'] = int(save_data['fullness-input'])
+    save_data['sealed'] = {"on": True, 'off': False}[save_data.get('sealed', 'off')]
     del save_data['add-item-input']
     # print(locs[url_id])
-    # print(save_data)
+    print(save_data)
     for key in save_data:
       locs[url_id][key.replace("-input","").replace("-list","")] = save_data[key]
     locs[url_id]["last_change"] = time.time()
@@ -637,9 +635,9 @@ def delete(url_id):
 @login_required
 def export_csv():
   load_json()   
-  dataCSV = "ID,Type,Description,Location\n"
+  dataCSV = "ID,Type,Description,Location,Destination,Sealed\n"
   for item in locs.values():
-    dataCSV += f"{item['id']},{item['type']},{item['description']},{item['location']}\n"  
+    dataCSV += f"{item['id']},{item['type']},{item['description']},{item['location']},{item.get('destination','')},{item.get('sealed','')}\n"  
   return send_file(
     BytesIO(dataCSV.encode()),
     mimetype="text/csv",

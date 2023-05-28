@@ -8,10 +8,8 @@
   
     {% if loc.location == "" %}<p>No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!</p>{% endif %}
     {% if loc.type == "" %}<p>No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!</p>{% endif %}
-    {% if loc.location != "" and loc.type != "" %}
-    <p>{{loc.type}} @ {{loc.location}}</p>
-    {% endif %}
-     
+    {% if loc.type != "" %}<p>{{loc.type}}</p>{% endif %}
+    {% if loc.location != "" %}<p>@ {{loc.location}}{% if loc.destination %}<br />(Moving to {{loc.destination}}){% endif %}</p>{% endif %}
   
   <div class="my-3 mt-5">
     <div class="meter-holder">
@@ -19,6 +17,7 @@
         <div style="width: {{loc.fullness}}%; background-color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);"></div>
       </div>
     </div>  
+    {% if loc.sealed %}<p>Location is sealed or closed.</p>{% endif %}
   </div>
 
   <div class="py-3">

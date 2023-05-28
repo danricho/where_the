@@ -13,10 +13,15 @@
     <p class="form-input-hint">Examples: <i>I.T. Equipment, Toys, Books</i></p>
   </div>           
   <div class="form-group">
-    <label class="form-label" for="location-input">Where</label>
+    <label class="form-label" for="location-input">Where it is</label>
     <input class="form-input" id="location-input" name="location-input" type="text" placeholder="Where is this storage location?" value="{% if loc.location != "" %}{{loc.location}}{% endif %}" />
     <p class="form-input-hint">Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></p>
-  </div>      
+  </div>  
+  <div class="form-group">
+    <label class="form-label" for="destination-input">Destination</label>
+    <input class="form-input" id="destination-input" name="destination-input" type="text" placeholder="Where is this storage going?" value="{% if loc.destination != "" %}{{loc.destination}}{% endif %}" />
+    <p class="form-input-hint">Examples: <i>Kitchen, Office, Garage, Beach House Ensuite</i></p>
+  </div>    
   <div class="form-group">
     <label class="form-label" for="type-input">Type</label>
     <input class="form-input" id="type-input" name="type-input" type="text" placeholder="Sortable Type Name" value="{% if loc.type != "" %}{{loc.type}}{% endif %}" />
@@ -25,6 +30,12 @@
   <div class="form-group">
     <label class="form-label" for="fullness-input">Capacity Used: <span id="fullness-numeric">{{loc.fullness}}</span>%</label>
     <input class="" id="fullness-input" name="fullness-input" type="range" value="{{loc.fullness}}" min="0" step="1" max="100" />
+  </div>
+  <div class="form-group">
+    <label class="form-switch">
+      <input type="checkbox" name="sealed" {% if loc.sealed %}checked=""{% endif %}>
+      <i class="form-icon"></i> Location is sealed or closed.
+    </label>
   </div>
   <div class="pt-3">
     <h4 class="mt-5">Stored Items</h4>

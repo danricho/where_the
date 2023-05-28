@@ -4,7 +4,8 @@ Last updated: 2023-05-28
 
 **2023-05-28**
 
- - LATEST!: *Hopefully fix the ongoing git issues and show new version availability.*
+ - LATEST!: *Add optional 'sealed' and 'destination' attributes to locations*
+ - 431ce81: *Hopefully fix the ongoing git issues and show new version availability.*
 
 **2023-05-21**
 

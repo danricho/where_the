@@ -8,11 +8,12 @@
       <img src="img/osx-el-capitan.jpg" class="img-responsive">
     </div> -->
     <div class="card-header">
-      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</div>
+      <div class="card-title h5">{% if loc.description != "" %}{{loc.description}}{% else %}No Description - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}{% if loc.sealed %} <small>[Sealed]</small> {% endif %}</div>
       <!-- <div class="card-subtitle pt-1"></div> -->
     </div>
     <div class="card-body py-0 my-1">
-      <span class="mr-3">{% if loc.location != "" %}{{loc.location}} {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}</span>
+      <span class="mr-3">{% if loc.location != "" %}{{loc.location}} {% else %}No Location - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
+      {% if loc.destination %}-> {{loc.destination}}{% endif %}</span>
       {% if loc.type != "" %}{{loc.type}}{% else %}No Type - <a href="{{url_for('edit', url_id=loc.id)}}">Edit</a> this!{% endif %}
       <br /><small class="label mr-3">{{loc.id}}</small>
       <span style="color: hsl({{(100 - loc.fullness)*1.47 | int}}, 50%, 50%);">          
