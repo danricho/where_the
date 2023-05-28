@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2023-05-21
+Last updated: 2023-05-28
+
+**2023-05-28**
+
+ - LATEST!: *Hopefully fix the ongoing git issues and show new version availability.*
 
 **2023-05-21**
 
- - LATEST!: *Remote repo stops it working... work in progress for the version check stuff.*
+ - 0227e1e: *Remote repo stops it working... work in progress for the version check stuff.*
  - eac7889: *Minor editing improvement to avoid missing half added items on location save*
  - f9319ac: *Add QR print improvements (and remove single QR print from view page) - Issue #25*
  - 14ee392: *Commit other half of the addition of Location CSV export*

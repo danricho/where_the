@@ -1,47 +1,55 @@
 import json, yaml, random
 import string, os, re, time, subprocess
 import qrcode, qrcode.image.svg
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from flask import Flask, request, Response, abort, render_template, redirect, url_for, send_from_directory, session, send_file
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from flask_qrcode import QRcode
 import traceback, sys
 from git import Repo
+import requests
 from io import BytesIO
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 
+# GITHUB REPO INFO
 repo = Repo.init(base_path)
-
 active_branch = repo.active_branch
 current_commit = repo.head.commit
 current_commit_datetime = repo.head.commit.committed_datetime
 current_commit_message = repo.head.commit.message
-# repo.remotes.origin.fetch()
-# commits_behind = len(list(repo.iter_commits(f'{active_branch}..origin/main')))
-# commits_ahead = len(list(repo.iter_commits(f'origin/main..{active_branch}')))
 dirty_repo = repo.is_dirty()
 
-try:
+# GITHUB REPO COMMITS
+r = requests.get('https://api.github.com/repos/danricho/where_the/commits')
+GHrepo = r.json()
+GH_head_datetime = datetime.strptime(GHrepo[0]['commit']['author']['date'], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
+# COMPARE LOCAL TO GITHUB
+if str(GHrepo[0]['sha']) == str(current_commit):
+  if dirty_repo:
+    local_GH = ("Same version as GitHub", True)
+  else:
+    local_GH = ("Same version as GitHub", False)
+elif GH_head_datetime > current_commit_datetime:
+  if dirty_repo:
+    local_GH = ("Newer version on GitHub", True)
+  else:
+    local_GH = ("Newer version available on GitHub", False)
+else:
+  if dirty_repo:
+    local_GH = ("Local version is newer than GitHub", True)
+  else:
+    local_GH = ("Local version is newer than GitHub", False)
 
-  git_revision = {
-    "hash": f"{current_commit}"[:7],
-    "timestamp": current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-    "subject": current_commit_message,
-    "modified": dirty_repo,
-    # "commits behind": commits_behind,
-    # "commits ahead": commits_ahead
-  }
-except:  
-  git_revision = {
-    "hash": "ERROR",
-    "timestamp": "",
-    "subject": "",
-    "modified": "",
-    # "commits behind": "",
-    # "commits ahead": ""
-  }
+git_revision = {
+  "hash": f"{current_commit}"[:7],
+  "timestamp": current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+  "subject": current_commit_message,
+  "modified": dirty_repo,
+  "local_GH": local_GH
+}
+
 
 ############################################################
 #              LOADING CONFIG FROM YAML FILE               #

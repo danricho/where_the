@@ -193,10 +193,13 @@
             <div class="divider text-center" data-content=""></div>       
             
 
-            <li style="padding: 0.5rem 0.4rem; opacity:0.60;">
-              <small class="tooltip" data-tooltip="{{git_revision.timestamp}}{% if git_revision.modified %}&#10;(MODIFIED){% endif %}">
-              Version: {{git_revision.hash}}{%- if git_revision.modified %}*{% endif %}</small><br />
-              {{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}
+            <li style="padding: 0.5rem 0.4rem; opacity:0.60;">     
+              <ul style="list-style: none; padding: 0; margin: 0;">         
+              <li>{{ link_pill("https://github.com/danricho/where_the", ["feedback via", "GitHub"]) }}</li>
+              <li><small>Version: {{git_revision.hash}}</small></li>
+              <li style="margin: 0;"><small>{{git_revision.local_GH[0]}}</small></li>
+              <li style="margin: 0;">{% if git_revision.local_GH[1] %}<small>Local changes.</small></li>{% endif %}
+              </ul>
             </li>            
           </ul>     
         </div>
