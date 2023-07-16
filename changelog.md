@@ -1,10 +1,14 @@
 # Change Log for WHERE THE ?!?
 
-Last updated: 2023-05-28
+Last updated: 2023-07-16
+
+**2023-07-16**
+
+ - LATEST!: *Formatted code using Black Formatter and tweaked the javascript for QR scans within the website (workaround for domain change).*
 
 **2023-05-28**
 
- - LATEST!: *Sealed flag is now a label (easier to see).*
+ - 3f23f85: *Sealed flag is now a label (easier to see).*
  - 59e47c7: *Added strip() for stored items on save_json calls.*
  - dfbdcf0: *Add optional 'sealed' and 'destination' attributes to locations*
  - 431ce81: *Hopefully fix the ongoing git issues and show new version availability.*

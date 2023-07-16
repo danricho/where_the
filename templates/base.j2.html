@@ -118,6 +118,7 @@
         <div class="modal-header">
           <a href="#close" class="btn btn-clear float-right" aria-label="Close" onclick="stop_scan();"></a>
           <div class="modal-title h5">Scan QR Code</div>
+          <p id="debug"></p>
         </div>
         <div class="modal-body">
           <div class="content">
@@ -126,7 +127,10 @@
             <script>
               const html5QrCode = new Html5Qrcode("qr-reader");
               const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                if (decodedText.startsWith("{{SITE.BASE_URL}}{{SITE.PATH_PREFIX}}")) { window.location = decodedText }
+                if (decodedText.includes("{{SITE.PATH_PREFIX}}/scan/")) { 
+                  // This has been changed to allow for a change in SITE.BASE_URL (only)... if needed the above condition could be change also to be more flexible.
+                  window.location = "{{SITE.BASE_URL}}{{SITE.PATH_PREFIX}}/view/" + decodedText.split("/").slice(-1)   
+                }
               };
               const config = { fps: 5, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0, formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] };
               function start_scan(){
