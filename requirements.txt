@@ -3,3 +3,4 @@ Flask
 Flask-QRcode
 Flask-Login
 GitPython
+requests
