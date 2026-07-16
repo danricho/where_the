@@ -207,7 +207,7 @@ Please propose and discuss ideas [here](https://github.com/danricho/where_the/di
 
 | # | Item | Value | Effort |
 |---|------|-------|--------|
-| 1 | **Fix search "all" mode** — currently returns "any" results because the item-matching pass uses an any-word match regardless of mode | High | ~30 min |
+| 1 | ~~**Fix search "all" mode** — currently returns "any" results because the item-matching pass uses an any-word match regardless of mode~~ ✅ Done (2026-07-16) | High | ~30 min |
 | 2 | **Start cleanly without internet** — the GitHub version check runs unguarded at startup; wrap it in try/except with a timeout so the app works offline | High | ~1 hr |
 | 3 | **Harden the edit route** — normalise the ID (`.upper()`) and check it exists before saving, matching the other routes | Med | ~30 min |
 | 4 | **Fix pagination with zero locations** — page count of 0 produces a negative slice | Low | ~30 min |

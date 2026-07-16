@@ -368,18 +368,15 @@ def search_locs(term, mode="any"):
                 results[this_id]["items"] = matching_items
 
         elif mode == "all":
+            # location matches only if ALL terms appear somewhere in its word pool
+            # (word_pool includes the items); matching items are then listed for display
             if all(x in word_pool for x in term):
-                if this_id not in results:
-                    results[this_id] = dict(loc)
-                    results[this_id]["items"] = []
-            matching_items = [
-                item for item in loc["items"] if any(x in item.upper() for x in term)
-            ]
-            if len(matching_items):
-                if this_id not in results:
-                    results[this_id] = dict(loc)
-                    results[this_id]["items"] = []
-                results[this_id]["items"] = matching_items
+                results[this_id] = dict(loc)
+                results[this_id]["items"] = [
+                    item
+                    for item in loc["items"]
+                    if any(x in item.upper() for x in term)
+                ]
 
         elif mode == "re":
             word_pool = str(list(loc.values())).upper()
