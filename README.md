@@ -199,12 +199,53 @@ PRINT_TEMPLATE:
 
 ## What's Next / Future Improvements
 
-I plan to start using it more to identify the holes I haven't found yet!  
-I do have a few ideas that I'd like to add while maintaining the current simplicity as much as possible.  
+The roadmap below is ordered by value-for-effort: quick wins first, big-ticket features last. Effort estimates assume familiarity with the codebase and include cursory testing.
 
-Please propose and discuss ideas [here](https://github.com/danricho/where_the/discussions)!
+Please propose and discuss ideas [here](https://github.com/danricho/where_the/discussions)! I would welcome any contributions to these with pull requests!
 
-I would welcome any contributions to these with pull requests!
+### Phase 1 — Bug fixes & hardening (quick wins)
+
+| # | Item | Value | Effort |
+|---|------|-------|--------|
+| 1 | **Fix search "all" mode** — currently returns "any" results because the item-matching pass uses an any-word match regardless of mode | High | ~30 min |
+| 2 | **Start cleanly without internet** — the GitHub version check runs unguarded at startup; wrap it in try/except with a timeout so the app works offline | High | ~1 hr |
+| 3 | **Harden the edit route** — normalise the ID (`.upper()`) and check it exists before saving, matching the other routes | Med | ~30 min |
+| 4 | **Fix pagination with zero locations** — page count of 0 produces a negative slice | Low | ~30 min |
+| 5 | **Proper CSV escaping on export** — use the `csv` module so commas/quotes in fields don't corrupt the file | Med | ~30 min |
+| 6 | **Pin dependency versions & refresh Docker base image** — requirements.txt is unpinned and the image uses EOL Python 3.9 / Alpine 3.14 | Med | ~1–2 hrs |
+
+### Phase 2 — Security & login polish
+
+| # | Item | Value | Effort |
+|---|------|-------|--------|
+| 7 | **Hashed passwords** ([#12](https://github.com/danricho/where_the/discussions/12)) — store werkzeug password hashes in config.yml instead of plaintext (with migration of existing plaintext entries) | High | ~2 hrs |
+| 8 | **Redirect to originally requested page after login** ([#5](https://github.com/danricho/where_the/discussions/5)) — existing TODO in main.py | Med | ~1 hr |
+| 9 | **"Remember me" on login** ([#5](https://github.com/danricho/where_the/discussions/5)) | Med | ~30 min |
+| 10 | **Escape item names on the edit page** — items are appended to the DOM as raw HTML client-side | Med | ~30 min |
+
+### Phase 3 — Storage upgrade
+
+| # | Item | Value | Effort |
+|---|------|-------|--------|
+| 11 | **Move from data.json to TinyDB** ([#3](https://github.com/danricho/where_the/discussions/3)) — pure-Python, single-file, no server; wrap storage behind a small data-access layer, auto-migrate existing data.json on first run, keep the daily-backup behaviour | High | ~4–6 hrs |
+
+Doing this behind a small storage interface makes the later item-metadata and image features much easier, which is why it sits before them.
+
+### Phase 4 — Features
+
+| # | Item | Value | Effort |
+|---|------|-------|--------|
+| 12 | **User settings page** ([#12](https://github.com/danricho/where_the/discussions/12)) — currently a placeholder in the menu; expose sort/pagination prefs and password change | Med | ~3–4 hrs |
+| 13 | **Dark mode** — CSS groundwork was done back in 2022; add a toggle + user preference | Med | ~2–4 hrs |
+| 14 | **CSV import** ([#17](https://github.com/danricho/where_the/discussions/17)) — round-trip the existing export, enabling migration from tools like Sortly | Med | ~3–4 hrs |
+| 15 | **Item metadata** ([#11](https://github.com/danricho/where_the/discussions/11)) — quantity, value, purchase date etc. as an optional per-item dict with globally defined tag names; needs schema, edit UI and search changes | High | ~8–12 hrs |
+| 16 | **Images per location** ([#19](https://github.com/danricho/where_the/discussions/19)) — photo of the box contents on the view page; per-location keeps it simple (per-item would be much larger) | Med | ~4–8 hrs |
+
+### Ongoing / nice-to-have
+
+- More label templates and printing tweaks ([#10](https://github.com/danricho/where_the/discussions/10))
+- More code comments for casual contributors ([#7](https://github.com/danricho/where_the/discussions/7))
+- Demo screenshot generation ([#16](https://github.com/danricho/where_the/discussions/16))
 
 ## Change Log
 
