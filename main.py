@@ -37,44 +37,48 @@ from git import Repo
 base_path = os.path.dirname(os.path.realpath(__file__))
 
 # GITHUB REPO INFO
-repo = Repo.init(base_path)
-active_branch = repo.active_branch
-current_commit = repo.head.commit
-current_commit_datetime = repo.head.commit.committed_datetime
-current_commit_message = repo.head.commit.message
-dirty_repo = repo.is_dirty()
-
-# GITHUB REPO COMMITS
-r = requests.get("https://api.github.com/repos/danricho/where_the/commits")
-GHrepo = r.json()
-GH_head_datetime = datetime.strptime(
-    GHrepo[0]["commit"]["author"]["date"], "%Y-%m-%dT%H:%M:%SZ"
-).replace(tzinfo=timezone.utc)
-
-# COMPARE LOCAL TO GITHUB
-if str(GHrepo[0]["sha"]) == str(current_commit):
-    if dirty_repo:
-        local_GH = ("Same version as GitHub", True)
-    else:
-        local_GH = ("Same version as GitHub", False)
-elif GH_head_datetime > current_commit_datetime:
-    if dirty_repo:
-        local_GH = ("Newer version on GitHub", True)
-    else:
-        local_GH = ("Newer version available on GitHub", False)
-else:
-    if dirty_repo:
-        local_GH = ("Local version is newer than GitHub", True)
-    else:
-        local_GH = ("Local version is newer than GitHub", False)
-
+# both the local git lookup and the GitHub API check are optional extras -
+# the app must still start if the .git directory is missing or there is no internet
 git_revision = {
-    "hash": f"{current_commit}"[:7],
-    "timestamp": current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-    "subject": current_commit_message,
-    "modified": dirty_repo,
-    "local_GH": local_GH,
+    "hash": "unknown",
+    "timestamp": "",
+    "subject": "",
+    "modified": False,
+    "local_GH": ("Version check unavailable", False),
 }
+
+try:
+    repo = Repo(base_path)
+    current_commit = repo.head.commit
+    current_commit_datetime = repo.head.commit.committed_datetime
+    dirty_repo = repo.is_dirty()
+    git_revision["hash"] = f"{current_commit}"[:7]
+    git_revision["timestamp"] = current_commit_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    git_revision["subject"] = repo.head.commit.message
+    git_revision["modified"] = dirty_repo
+
+    # GITHUB REPO COMMITS
+    r = requests.get(
+        "https://api.github.com/repos/danricho/where_the/commits", timeout=5
+    )
+    GHrepo = r.json()
+    GH_head_datetime = datetime.strptime(
+        GHrepo[0]["commit"]["author"]["date"], "%Y-%m-%dT%H:%M:%SZ"
+    ).replace(tzinfo=timezone.utc)
+
+    # COMPARE LOCAL TO GITHUB
+    if str(GHrepo[0]["sha"]) == str(current_commit):
+        git_revision["local_GH"] = ("Same version as GitHub", dirty_repo)
+    elif GH_head_datetime > current_commit_datetime:
+        if dirty_repo:
+            git_revision["local_GH"] = ("Newer version on GitHub", True)
+        else:
+            git_revision["local_GH"] = ("Newer version available on GitHub", False)
+    else:
+        git_revision["local_GH"] = ("Local version is newer than GitHub", dirty_repo)
+
+except Exception as e:
+    print(f"Version check skipped: {e}")
 
 
 ############################################################
