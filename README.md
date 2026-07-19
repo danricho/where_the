@@ -15,6 +15,7 @@ A simple Python Flask web application which helps keep track of your stored item
 
 - Responsive web-based user interface
 - Easy, simple location editing
+- Bulk item editor — all items of a location in one text block, one per line (fast stocktakes on a laptop; press <kbd>b</kbd> on a location page)
 - Search by stored item
 - Sort locations by different attributes:
    - description

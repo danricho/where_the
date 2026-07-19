@@ -35,6 +35,7 @@
 
   <div class="my-3 mt-5">
     <button id="edit-button" class="btn btn-primary" onclick="location.href='{{url_for('edit', url_id=loc.id)}}'">Edit</button>
+    <button id="bulk-edit-button" class="btn hide-on-phone" onclick="location.href='{{url_for('bulk_edit', url_id=loc.id)}}'">Bulk Edit Items</button>
   </div>
   <div class="my-3">
     {% if from_search %}
@@ -51,6 +52,11 @@
     if (e.keyCode == 101 || e.keyCode == 69) {
       // "E" or "e"
       $("#edit-button").click()
+      return false;
+    }
+    if (e.keyCode == 98 || e.keyCode == 66) {
+      // "B" or "b"
+      $("#bulk-edit-button").click()
       return false;
     }
   });

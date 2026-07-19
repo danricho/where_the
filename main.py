@@ -789,6 +789,31 @@ def edit(url_id):
             raise locationIdNotFound()
 
 
+# bulk edit page (all items in one editable text block, one item per line)
+@app.route(
+    config["SITE"]["PATH_PREFIX"] + "/bulk-edit/<string:url_id>",
+    methods=["GET", "POST"],
+)
+@login_required
+def bulk_edit(url_id):
+    global locs
+    load_json()
+    if url_id.upper() not in locs:
+        raise locationIdNotFound()
+
+    if request.method == "POST":
+        items = json.loads(request.form["items-list"])
+        items = [item.strip() for item in items if item.strip() != ""]
+        locs[url_id.upper()]["items"] = items
+        locs[url_id.upper()]["last_change"] = time.time()
+        save_json()
+        if request.form.get("next") == "edit":
+            return redirect(url_for("edit", url_id=url_id))
+        return redirect(url_for("view", url_id=url_id))
+
+    return render_template("bulk_edit.j2.html", loc=locs[url_id.upper()])
+
+
 # create a new location page (redirects to edit once ID generated)
 @app.route(config["SITE"]["PATH_PREFIX"] + "/create", methods=["GET", "POST"])
 @login_required

@@ -1,0 +1,96 @@
+{% extends "base.j2.html" %}
+{% block main %}
+
+<style>
+  #bulk-editor {
+    font-family: "SF Mono", "Consolas", "Menlo", monospace;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+    border: 0.05rem solid #bcc3ce;
+    border-radius: 0.1rem;
+    padding: 0.5rem 0.6rem;
+    min-height: 14rem;
+    max-height: 65vh;
+    overflow-y: auto;
+    outline: none;
+  }
+  #bulk-editor:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.1rem var(--color-shaddow);
+  }
+  /* each child div is one item; the margin marks the item boundary,
+     wrapped lines within an item stay tight */
+  #bulk-editor > div { margin-bottom: 0.55rem; min-height: 1.3em; }
+  #bulk-editor > div:last-child { margin-bottom: 0; }
+</style>
+
+<h4>Bulk Edit Items{% if loc.description != "" %} <small class="label ml-3">{{loc.description}}</small>{% endif %}</h4>
+
+<div class="py-3">
+  <p>ID: {{loc.id}}</p>
+
+  <form method="post">
+    <div class="form-group">
+      <label class="form-label" for="bulk-editor">Stored Items: <span id="item-count">{{loc['items'] | length}}</span></label>
+      <div id="bulk-editor" contenteditable="true" spellcheck="false">{% for item in loc['items'] | sort %}<div>{{item}}</div>{% endfor %}{% if not loc['items'] %}<div><br></div>{% endif %}</div>
+      <p class="form-input-hint">One item per line — press Enter to start a new item. Blank lines are ignored. Long items wrap without a gap; the gap marks where the next item starts.</p>
+    </div>
+
+    <div class="columns pt-5">
+      <div class="column">
+        <button type="submit" class="btn btn-primary primary">Save</button>
+        <button type="button" class="btn cancel-button" onclick="location.href='{{url_for('view', url_id=loc.id)}}'">Cancel</button>
+      </div>
+      <div class="column col-auto">
+        <button type="submit" class="btn" name="next" value="edit">Save &amp; Full Edit</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+
+  function editor_items() {
+    lst = [];
+    $.each($("#bulk-editor").prop("innerText").split("\n"), function(i, line){
+      if (line.trim() != "") { lst.push(line.trim()); }
+    });
+    return lst;
+  }
+
+  // rebuild one-div-per-item structure (paste or delete can leave stray
+  // text nodes / <br>s at the root, which lose the per-item gap styling)
+  function normalise_editor() {
+    var lines = editor_items();
+    var html = "";
+    $.each(lines, function(i, line){
+      html += $("<div>").text(line).prop("outerHTML");
+    });
+    if (html == "") { html = "<div><br></div>"; }
+    $("#bulk-editor").html(html);
+  }
+
+  $("#bulk-editor").on("input", function(){
+    $("#item-count").text(editor_items().length);
+  });
+
+  $("#bulk-editor").on("blur", normalise_editor);
+
+  $("#bulk-editor").on("paste", function(e){
+    // force plain-text paste; normalise afterwards to restore per-item divs
+    e.preventDefault();
+    var text = (e.originalEvent.clipboardData || window.clipboardData).getData("text/plain");
+    document.execCommand("insertText", false, text);
+    normalise_editor();
+    $("#item-count").text(editor_items().length);
+  });
+
+  $("form").submit( function(ev){
+    $("<input />").val(JSON.stringify(editor_items())).attr({"type": "hidden", "name": "items-list", "id": "items-list"}).appendTo("form")
+  });
+
+</script>
+
+{% endblock %}
