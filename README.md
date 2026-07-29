@@ -6,9 +6,6 @@
 
 A simple Python Flask web application which helps keep track of your stored items.
 
-<a href="https://danricho.com"><img src="https://img.shields.io/static/v1?label=built by&message=danricho&style=flat&color=C0A890&labelColor=a0a0a0" alt="Built with Python3"></a> <a href="https://en.wikipedia.org/wiki/2022"><img src="https://img.shields.io/static/v1?label=built in&message=2022&style=flat&color=C0A890&labelColor=a0a0a0" alt="Built in 2022"></a> <a href="https://choosealicense.com/licenses/gpl-3.0/"><img src="https://img.shields.io/static/v1?label=released under&message=GNU GPLv3&style=flat&color=C0A890&labelColor=a0a0a0" alt="Released under GNU GPLv3"></a>
-<a href="https://www.python.org/"><img src="https://img.shields.io/badge/built using-Python 3-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Python3"></a> <a href="https://flask.palletsprojects.com/"><img src="https://img.shields.io/badge/built using-Flask-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask"></a> <a href="https://flask-login.readthedocs.io/en/latest/"><img src="https://img.shields.io/badge/built using-Flask Login-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask Login"></a> <a href="https://marcoagner.github.io/Flask-QRcode/"><img src="https://img.shields.io/badge/built using-Flask QRCode-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Flask QRCode"></a> <a href="https://github.com/mebjas/html5-qrcode"><img src="https://img.shields.io/badge/built using-HTML5 QRCode-C0A890?labelColor=a0a0a0&style=flat" alt="Built using HTML5 QRCode"></a> <a href="https://jquery.com/"><img src="https://img.shields.io/badge/built using-JQuery 3.5.1-C0A890?labelColor=a0a0a0&style=flat" alt="Built using JQuery 3.5.1"></a> <a href="https://picturepan2.github.io/spectre/"><img src="https://img.shields.io/badge/built using-Spectre CSS-C0A890?labelColor=a0a0a0&style=flat" alt="Built using Spectre CSS"></a>
-
 </div>
 
 ## Features
@@ -18,12 +15,12 @@ A simple Python Flask web application which helps keep track of your stored item
 - Bulk item editor — all items of a location in one text block, one per line (fast stocktakes on a laptop; press <kbd>b</kbd> on a location page)
 - Search by stored item
 - Sort locations by different attributes:
-   - description
-   - location (eg. Office, Garage, etc)
-   - type (eg. Shelf, Plastic Box, etc)
-   - recently edited
-   - unique ID
-   - how used (fullness)
+  - description
+  - location (eg. Office, Garage, etc)
+  - type (eg. Shelf, Plastic Box, etc)
+  - recently edited
+  - unique ID
+  - how used (fullness)
 - QR codes to assist location tracking based on unique ID
 - Print QR code labels from website
 - Simple JSON storage (pros & cons)
@@ -36,7 +33,7 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
 
 ## Installation - Native Python
 
-*These steps describe how I set it up. I use a linux terminal so under Windows there may be minor step inaccuracies.*
+_These steps describe how I set it up. I use a linux terminal so under Windows there may be minor step inaccuracies._
 
 1.  Clone repo to a local directory.
     eg: `git clone https://github.com/danricho/where_the.git where_the`
@@ -45,20 +42,19 @@ See [this page](static/screenshots/screenshots.md) for example screenshots.
     eg: `python3 -m venv venv`
 
 1.  Install dependencies via pip into your venv.
-    eg: `venv/bin/pip install -r requirements.txt` or activate venv then `pip install -r requirements.txt` 
+    eg: `venv/bin/pip install -r requirements.txt` or activate venv then `pip install -r requirements.txt`
 
 1.  Create `config.yml` and update according it to your setup - see the [Configuration section](#configuration-configyml).
 
 1.  Run `main.py` in your venv.
-    eg: `venv/bin/python main.py` or activate venv then `python main.py` 
+    eg: `venv/bin/python main.py` or activate venv then `python main.py`
 
 **NOTE:**
 If running the script as root (or sudo), the directory ownership may need to be changed to root using `chown -R root .`. This is due to a new ownership check in newer versions of git and Where The checks for new versions when it starts. If the check can't run (no internet, or the ownership issue above), the app still starts and simply shows "Version check unavailable" in the menu instead of the version comparison.
 
-
 ## Installation - Docker
 
-*Running in Docker is a quick way to get this to run as a service (launches on boot etc).*
+_Running in Docker is a quick way to get this to run as a service (launches on boot etc)._
 
 1. Clone repo to a local directory.
    eg: `git clone https://github.com/danricho/where_the.git where_the`
@@ -67,18 +63,19 @@ If running the script as root (or sudo), the directory ownership may need to be 
 
 1. Create `data.json` and set the content to `{}`. This file is mounted within the docker image but saved here outside it (to keep data between docker sessions)
 
-1. Run the docker container using the command `docker-compose up -d`. 
+1. Run the docker container using the command `docker-compose up -d`.
 
 1. To troubleshoot the container it may help to see it's logs: `docker logs where_the`
 
 **NOTE:**
 Networking settings are more complicated when using docker, so check the following:
- - in `config.yml`:
-    - `FLASK.HOST` -  `0.0.0.0`
-    - `FLASK.PORT` - `5000`
-    - `SITE.BASE_URL` - usually host's IP or hostname
+
+- in `config.yml`:
+  - `FLASK.HOST` - `0.0.0.0`
+  - `FLASK.PORT` - `5000`
+  - `SITE.BASE_URL` - usually host's IP or hostname
 - in `docker-compose.yml`:
-  - `services.web-app.ports` - `80:5000` - second number needs to match above, first is the port that docker will use. *Note: 80 may require special permission*.
+  - `services.web-app.ports` - `80:5000` - second number needs to match above, first is the port that docker will use. _Note: 80 may require special permission_.
 
 ### Pre-Built Docker Image
 
@@ -87,7 +84,7 @@ Each push to this repo now re-builds a 'package' which is GitHub's name for pre-
 
 - Using docker command to pull the image to the local machine:
   `docker pull ghcr.io/danricho/where_the:main`
-- Use  in docker-compose file:
+- Use in docker-compose file:
   `image: ghcr.io/danricho/where_the:main`
 - Use docker run, although the correct arguments will need to be provided - see `docker-compose.yml` for more information.
 
@@ -95,7 +92,7 @@ Each push to this repo now re-builds a 'package' which is GitHub's name for pre-
 
 To update, all that should be needed is to run the command `git pull` in your Where The ?!? directory.
 
-If you get a message about local file changes which would be overwritten by merge, this means you have modified one of the tracked files. The config and data files (as made during installation) are not the files git is talking about. 
+If you get a message about local file changes which would be overwritten by merge, this means you have modified one of the tracked files. The config and data files (as made during installation) are not the files git is talking about.
 
 The command `git diff` will tell you what is different about the files. Running `git reset --hard HEAD` will reset the uncommited file changes, but **NOTE THAT** you may lose work if you do this. Only do this if you understand what you are doing. And once your Repo is clean, the `git pull` should work.
 
@@ -105,7 +102,7 @@ There are many resources available online to learn more about Git operations.
 
 After updating, the docker image needs to be rebuilt as the app files (other than those mapped in `docker-compose.yml`) are cached inside the docker image. This automatically happens the first time you bring Where The ?!? up.
 
-This can be done by running docker-compose with a few extra commands: 
+This can be done by running docker-compose with a few extra commands:
 `docker-compose up -d --force-recreate --build`
 
 If using the pre-built image, ensure that you freshly pull the latest image.
@@ -115,33 +112,33 @@ If using the pre-built image, ensure that you freshly pull the latest image.
 ```yaml
 # DO NOT ADD COMMENTS YOU WANT KEPT TO THIS YML AS IT IS REWRITTEN BY THE APP AND COMMENTS ARE LOST.
 
-SITE: 
+SITE:
   BASE_URL: http://localhost # THIS IS YOUR DOMAIN OR START OF YOUR URL - USED IN QR CODE
   PATH_PREFIX: / # THIS IS USEFUL IF YOU WANT A PREFIX ON THE URL PATH - USED IN QR CODE AND FLASK
 
-# THE MAIN COLOR. 
+# THE MAIN COLOR.
 # THE DEFAULT #C0A890 IS BASED ON A CARBOARD BOX COLOR :)
-# CAN BE IN ONE OF THE FOLLOWING FORMATS: 
+# CAN BE IN ONE OF THE FOLLOWING FORMATS:
 #  - rgb(192, 168, 144)
 #  - hsl(30, 28%, 66%)
 #  - #C0A890
 # NOTE: ALPHA VALUES WILL BE IGNORED
-PRIMARY-COLOR: '#C0A890' 
+PRIMARY-COLOR: '#C0A890'
 
 #-------------------------------------
 
 # THESE ARE FLASK CONFIGURATION SETTINGS
-FLASK: 
+FLASK:
   HOST: 0.0.0.0
   PORT: '5000'
-  SECRET: abcd1234 
+  SECRET: abcd1234
   DEBUG: false
   TEMPLATES_AUTO_RELOAD: true
   USE_RELOADER: false
 
 #-------------------------------------
-# CAN BE ONE OF: 'NO-AUTH', 'FLASK-LOGIN', 'AUTHELIA' 
-AUTHENTICATION: FLASK-LOGIN 
+# CAN BE ONE OF: 'NO-AUTH', 'FLASK-LOGIN', 'AUTHELIA'
+AUTHENTICATION: FLASK-LOGIN
 
 # NEXT, ADD ONE OF THE FOLLOWING TO MATCH
 
@@ -150,7 +147,7 @@ AUTHENTICATION: FLASK-LOGIN
 USERS: {}
 
 # SETTING UP USERS FOR FLASK-LOGIN AUTHENTICATION (FLASK-LOGIN)
-USERS: 
+USERS:
   user:
     password: pass
   user2:
@@ -162,7 +159,7 @@ USERS: {}
 
 # FOR INFORMATION:
 # AUTHELIA IS AN AUTHENTICATION MIDDLEWARE USEFUL WHEN USING TRAEFIK FOR ROUTING
-# 'WHERE THE ?!?' READS THE AUTHENTICATION HEADERS AUTHELIA PROVIDES ONCE LOGGED 
+# 'WHERE THE ?!?' READS THE AUTHENTICATION HEADERS AUTHELIA PROVIDES ONCE LOGGED
 # IN TO KEEP TRACK OF WHO IS LOGGED IN. ACCESS CONTROL IS HANDLED PRIOR TO
 # ACCESSING 'WHERE THE ?!?' WHEN USING AUTHELIA.
 AUTHELIA-LOGOUT: https://auth.SAMPLE-DOMAIN.org # IF SET, HOMEPAGE WILL HAVE A LOGOUT BUTTON IN AUTHELIA MODE
@@ -171,13 +168,13 @@ AUTHELIA-LOGOUT: https://auth.SAMPLE-DOMAIN.org # IF SET, HOMEPAGE WILL HAVE A L
 PRINT_TEMPLATE:
 
   ADD_DESCRIPTION_TO_LABEL: true # WHEN USING THIS, BE AWARE OF DESCRIPTION LENGTH.
-  ADD_LOGO_TO_QR: true # REMOVES THE LOGO IN THE CENTRE OF THE QR CODE.  
+  ADD_LOGO_TO_QR: true # REMOVES THE LOGO IN THE CENTRE OF THE QR CODE.
   COLORED_BACKGROUNDS: true # USE PRIMARY COLOR FOR BACKGROUND OF DESCRIPTION AND ID (DARK GREY IF FALSE)
 
   # BELOW ARE USED TO LAYOUT THE QR CODE LABELS. THE DEFAULT IS SHOWN
   IDENTIFIER: AVERY L7164 # JUST A NAME FOR THIS LABEL LAYOUT - CAN BE ANYTHING
 
-  PAGE: 
+  PAGE:
     WIDTH: 21cm # A4 PAGE WIDTH
     X_MARGIN: 0.7214cm # L7164 (MEASURED FROM LEFT PAGEEDGE TO FIRST LABEL)
     Y_MARGIN: 0.457cm # L7164 (MEASURED FROM TOP PAGE EDGE TO FIRST LABEL)
@@ -206,39 +203,39 @@ Please propose and discuss ideas [here](https://github.com/danricho/where_the/di
 
 ### Phase 1 — Bug fixes & hardening (quick wins)
 
-| # | Item | Value | Effort |
-|---|------|-------|--------|
-| 1 | **Harden the edit route** — normalise the ID (`.upper()`) and check it exists before saving, matching the other routes | Med | ~30 min |
-| 2 | **Fix pagination with zero locations** — page count of 0 produces a negative slice | Low | ~30 min |
-| 3 | **Proper CSV escaping on export** — use the `csv` module so commas/quotes in fields don't corrupt the file | Med | ~30 min |
-| 4 | **Pin dependency versions & refresh Docker base image** — requirements.txt is unpinned and the image uses EOL Python 3.9 / Alpine 3.14 | Med | ~1–2 hrs |
+| #   | Item                                                                                                                                   | Value | Effort   |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ----- | -------- |
+| 1   | **Harden the edit route** — normalise the ID (`.upper()`) and check it exists before saving, matching the other routes                 | Med   | ~30 min  |
+| 2   | **Fix pagination with zero locations** — page count of 0 produces a negative slice                                                     | Low   | ~30 min  |
+| 3   | **Proper CSV escaping on export** — use the `csv` module so commas/quotes in fields don't corrupt the file                             | Med   | ~30 min  |
+| 4   | **Pin dependency versions & refresh Docker base image** — requirements.txt is unpinned and the image uses EOL Python 3.9 / Alpine 3.14 | Med   | ~1–2 hrs |
 
 ### Phase 2 — Security & login polish
 
-| # | Item | Value | Effort |
-|---|------|-------|--------|
-| 5 | **Hashed passwords** ([#12](https://github.com/danricho/where_the/discussions/12)) — store werkzeug password hashes in config.yml instead of plaintext (with migration of existing plaintext entries) | High | ~2 hrs |
-| 6 | **Redirect to originally requested page after login** ([#5](https://github.com/danricho/where_the/discussions/5)) — existing TODO in main.py | Med | ~1 hr |
-| 7 | **"Remember me" on login** ([#5](https://github.com/danricho/where_the/discussions/5)) | Med | ~30 min |
-| 8 | **Escape item names on the edit page** — items are appended to the DOM as raw HTML client-side | Med | ~30 min |
+| #   | Item                                                                                                                                                                                                  | Value | Effort  |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | ------- |
+| 5   | **Hashed passwords** ([#12](https://github.com/danricho/where_the/discussions/12)) — store werkzeug password hashes in config.yml instead of plaintext (with migration of existing plaintext entries) | High  | ~2 hrs  |
+| 6   | **Redirect to originally requested page after login** ([#5](https://github.com/danricho/where_the/discussions/5)) — existing TODO in main.py                                                          | Med   | ~1 hr   |
+| 7   | **"Remember me" on login** ([#5](https://github.com/danricho/where_the/discussions/5))                                                                                                                | Med   | ~30 min |
+| 8   | **Escape item names on the edit page** — items are appended to the DOM as raw HTML client-side                                                                                                        | Med   | ~30 min |
 
 ### Phase 3 — Storage upgrade
 
-| # | Item | Value | Effort |
-|---|------|-------|--------|
-| 9 | **Move from data.json to TinyDB** ([#3](https://github.com/danricho/where_the/discussions/3)) — pure-Python, single-file, no server; wrap storage behind a small data-access layer, auto-migrate existing data.json on first run, keep the daily-backup behaviour | High | ~4–6 hrs |
+| #   | Item                                                                                                                                                                                                                                                              | Value | Effort   |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | -------- |
+| 9   | **Move from data.json to TinyDB** ([#3](https://github.com/danricho/where_the/discussions/3)) — pure-Python, single-file, no server; wrap storage behind a small data-access layer, auto-migrate existing data.json on first run, keep the daily-backup behaviour | High  | ~4–6 hrs |
 
 Doing this behind a small storage interface makes the later item-metadata and image features much easier, which is why it sits before them.
 
 ### Phase 4 — Features
 
-| # | Item | Value | Effort |
-|---|------|-------|--------|
-| 10 | **User settings page** ([#12](https://github.com/danricho/where_the/discussions/12)) — currently a placeholder in the menu; expose sort/pagination prefs and password change | Med | ~3–4 hrs |
-| 11 | **Dark mode** — CSS groundwork was done back in 2022; add a toggle + user preference | Med | ~2–4 hrs |
-| 12 | **CSV import** ([#17](https://github.com/danricho/where_the/discussions/17)) — round-trip the existing export, enabling migration from tools like Sortly | Med | ~3–4 hrs |
-| 13 | **Item metadata** ([#11](https://github.com/danricho/where_the/discussions/11)) — quantity, value, purchase date etc. as an optional per-item dict with globally defined tag names; needs schema, edit UI and search changes | High | ~8–12 hrs |
-| 14 | **Images per location** ([#19](https://github.com/danricho/where_the/discussions/19)) — photo of the box contents on the view page; per-location keeps it simple (per-item would be much larger) | Med | ~4–8 hrs |
+| #   | Item                                                                                                                                                                                                                         | Value | Effort    |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | --------- |
+| 10  | **User settings page** ([#12](https://github.com/danricho/where_the/discussions/12)) — currently a placeholder in the menu; expose sort/pagination prefs and password change                                                 | Med   | ~3–4 hrs  |
+| 11  | **Dark mode** — CSS groundwork was done back in 2022; add a toggle + user preference                                                                                                                                         | Med   | ~2–4 hrs  |
+| 12  | **CSV import** ([#17](https://github.com/danricho/where_the/discussions/17)) — round-trip the existing export, enabling migration from tools like Sortly                                                                     | Med   | ~3–4 hrs  |
+| 13  | **Item metadata** ([#11](https://github.com/danricho/where_the/discussions/11)) — quantity, value, purchase date etc. as an optional per-item dict with globally defined tag names; needs schema, edit UI and search changes | High  | ~8–12 hrs |
+| 14  | **Images per location** ([#19](https://github.com/danricho/where_the/discussions/19)) — photo of the box contents on the view page; per-location keeps it simple (per-item would be much larger)                             | Med   | ~4–8 hrs  |
 
 ### Ongoing / nice-to-have
 

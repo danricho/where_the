@@ -921,6 +921,7 @@ def inject_data():
             "LOCS": len(locs.values()),
             "ITEMS": len(sum([loc["items"] for loc in locs.values()], [])),
         },
+        "NOW": datetime.now().strftime("%Y-%m-%d"),
         "AUTHELIA_URL": config.get("AUTHELIA_URL", None),
     }
 
